@@ -12,8 +12,10 @@ import { Flipper, Flipped } from 'react-flip-toolkit';
 import { FormattedMessage } from 'react-intl';
 import ListPeer from './ListPeer';
 import ListMe from './ListMe';
-import ListModerator from './ListModerator';
+import ListHost from './ListModerator';
 import Volume from '../../Containers/Volume';
+import ShareDialogs from './ShareDialogs';
+import { Button } from '@material-ui/core';
 
 const styles = (theme) =>
 	({
@@ -71,7 +73,7 @@ class ParticipantList extends React.PureComponent
 	{
 		const {
 			advancedMode,
-			isModerator,
+			isHost,
 			participants,
 			spotlights,
 			selectedPeers,
@@ -80,15 +82,15 @@ class ParticipantList extends React.PureComponent
 
 		return (
 			<div className={classes.root} ref={(node) => { this.node = node; }}>
-				{ isModerator &&
+				{ isHost &&
 					<ul className={classes.list}>
 						<li className={classes.listheader}>
 							<FormattedMessage
-								id='room.moderatoractions'
-								defaultMessage='Moderator actions'
+								id='room.Hostactions'
+								defaultMessage='Host actions'
 							/>
 						</li>
-						<ListModerator />
+						<ListHost />
 					</ul>
 				}
 				<ul className={classes.list}>
@@ -119,7 +121,7 @@ class ParticipantList extends React.PureComponent
 									<ListPeer
 										id={peer.id}
 										advancedMode={advancedMode}
-										isModerator={isModerator}
+										isHost={isHost}
 										spotlight={spotlights.includes(peer.id)}
 										isSelected={selectedPeers.includes(peer.id)}
 									>
@@ -129,6 +131,9 @@ class ParticipantList extends React.PureComponent
 							</Flipped>
 						))}
 					</Flipper>
+					<li className={classes.listheader}>
+						<ShareDialogs />
+					</li>
 				</ul>
 			</div>
 		);
@@ -138,7 +143,7 @@ class ParticipantList extends React.PureComponent
 ParticipantList.propTypes =
 {
 	advancedMode  : PropTypes.bool,
-	isModerator   : PropTypes.bool.isRequired,
+	isHost        : PropTypes.bool.isRequired,
 	participants  : PropTypes.array.isRequired,
 	spotlights    : PropTypes.array.isRequired,
 	selectedPeers : PropTypes.array.isRequired,
@@ -152,7 +157,7 @@ const makeMapStateToProps = () =>
 	const mapStateToProps = (state) =>
 	{
 		return {
-			isModerator   : hasPermission(state),
+			isHost        : hasPermission(state),
 			participants  : participantListSelector(state),
 			spotlights    : state.room.spotlights,
 			selectedPeers : state.room.selectedPeers

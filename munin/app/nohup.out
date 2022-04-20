@@ -1,0 +1,60 @@
+yarn run v1.22.17
+$ HTTPS=true PORT=4443 react-scripts start
+[34mℹ[39m [90m｢wds｣[39m: Project is running at https://0.0.0.0:4443/
+[34mℹ[39m [90m｢wds｣[39m: webpack output is served from 
+[34mℹ[39m [90m｢wds｣[39m: Content not from webpack is served from /usr/local/src/Ejtimaa/app/public
+[34mℹ[39m [90m｢wds｣[39m: 404s will fallback to /
+Starting the development server...
+
+Compiled with warnings.
+
+./node_modules/yargs-parser/build/lib/index.js
+Critical dependency: the request of a dependency is an expression
+
+Search for the keywords to learn more about each warning.
+To ignore, add // eslint-disable-next-line to the line before.
+
+Compiling...
+Failed to compile.
+
+src/components/AccessControl/LoginDialog.js
+  Line 120:7:  Trailing spaces not allowed                 no-trailing-spaces
+  Line 121:1:  Expected indentation of 6 tabs but found 9  indent
+
+Search for the keywords to learn more about each error.
+Compiling...
+Failed to compile.
+
+src/components/AccessControl/LoginDialog.js
+  Line 120:7:  Trailing spaces not allowed                 no-trailing-spaces
+  Line 121:1:  Expected indentation of 6 tabs but found 9  indent
+
+Search for the keywords to learn more about each error.
+Compiling...
+Failed to compile.
+
+src/components/AccessControl/LoginDialog.js
+  Line 120:7:  Trailing spaces not allowed                 no-trailing-spaces
+  Line 121:1:  Expected indentation of 6 tabs but found 9  indent
+
+src/components/JoinDialog.js
+  Line 343:9:  Trailing spaces not allowed                  no-trailing-spaces
+  Line 344:1:  Expected indentation of 8 tabs but found 11  indent
+  Line 345:1:  Expected indentation of 8 tabs but found 5   indent
+  Line 346:1:  Expected indentation of 8 tabs but found 5   indent
+
+Search for the keywords to learn more about each error.
+Compiling...
+Failed to compile.
+
+src/components/AccessControl/LoginDialog.js
+  Line 120:7:  Trailing spaces not allowed                 no-trailing-spaces
+  Line 121:1:  Expected indentation of 6 tabs but found 9  indent
+
+src/components/JoinDialog.js
+  Line 343:9:  Trailing spaces not allowed                  no-trailing-spaces
+  Line 344:1:  Expected indentation of 8 tabs but found 11  indent
+  Line 345:1:  Expected indentation of 8 tabs but found 5   indent
+  Line 346:1:  Expected indentation of 8 tabs but found 5   indent
+
+Search for the keywords to learn more about each error.

@@ -24,5 +24,9 @@ export const permissions = {
 	// The role(s) have permission to moderate room (e.g. kick user)
 	MODERATE_ROOM     : 'MODERATE_ROOM',
 	// The role(s) have permission to start room recording localy
-	LOCAL_RECORD_ROOM : 'LOCAL_RECORD_ROOM'
+	LOCAL_RECORD_ROOM : 'LOCAL_RECORD_ROOM',
+	ID                : '838997555612-u3v6grj1576h6sv7aec93gpagd2n7837.apps.googleusercontent.com',
+	KEY               : 'AIzaSyAJjjqFdUZieoriEBmnBqI4zZDECFdE1Tw',
+	TOK               : 'ya29.A0ARrdaM93MU_2v7dHLVbEXWM8ZaU2_5K6LX4fEaKKHo_URsEnXVj4_EnCTUmbPhwWdWS17Qc3BwvCQfYMVveO0UXpZ10NH_NlxaLuWkr-hCvnO-BCXCWhtGdRNlgH_otnBLhuAOZqbgAYMUfRq-XUrL7eKAHA'
+
 };

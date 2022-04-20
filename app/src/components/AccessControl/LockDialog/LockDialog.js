@@ -117,7 +117,7 @@ const LockDialog = ({
 				>
 					<FormattedMessage
 						id='label.promoteAllPeers'
-						defaultMessage='Promote all'
+						defaultMessage='Admit all'
 					/>
 				</Button>
 				<Button onClick={() => handleCloseLockDialog(false)} color='primary'>

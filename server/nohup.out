@@ -1,0 +1,36 @@
+yarn run v1.22.17
+$ node dist/server.js
+- process.env.DEBUG: undefined
+- config.mediasoup.worker.logLevel: warn
+- config.mediasoup.worker.logTags: [ 'info', 'ice', 'dtls', 'rtp', 'srtp', 'rtcp' ]
+node_redis: Warning: Redis server does not require a password, but a password was supplied.
+Killed
+error Command failed with exit code 137.
+info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.
+yarn run v1.22.17
+$ node dist/server.js
+- process.env.DEBUG: undefined
+- config.mediasoup.worker.logLevel: warn
+- config.mediasoup.worker.logTags: [ 'info', 'ice', 'dtls', 'rtp', 'srtp', 'rtcp' ]
+node_redis: Warning: Redis server does not require a password, but a password was supplied.
+Killed
+error Command failed with exit code 137.
+info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.
+yarn run v1.22.17
+$ node dist/server.js
+- process.env.DEBUG: undefined
+- config.mediasoup.worker.logLevel: warn
+- config.mediasoup.worker.logTags: [ 'info', 'ice', 'dtls', 'rtp', 'srtp', 'rtcp' ]
+node_redis: Warning: Redis server does not require a password, but a password was supplied.
+yarn run v1.22.17
+$ node dist/server.js
+- process.env.DEBUG: undefined
+- config.mediasoup.worker.logLevel: warn
+- config.mediasoup.worker.logTags: [ 'info', 'ice', 'dtls', 'rtp', 'srtp', 'rtcp' ]
+node_redis: Warning: Redis server does not require a password, but a password was supplied.
+yarn run v1.22.17
+$ node dist/server.js
+- process.env.DEBUG: undefined
+- config.mediasoup.worker.logLevel: warn
+- config.mediasoup.worker.logTags: [ 'info', 'ice', 'dtls', 'rtp', 'srtp', 'rtcp' ]
+node_redis: Warning: Redis server does not require a password, but a password was supplied.

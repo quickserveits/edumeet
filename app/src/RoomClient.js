@@ -18,7 +18,7 @@ import * as notificationActions from './store/actions/notificationActions';
 import * as transportActions from './store/actions/transportActions';
 import Spotlights from './Spotlights';
 import { permissions } from './permissions';
-import * as locales from './translations/locales';
+import * as locales from './intl/locales';
 import { createIntl } from 'react-intl';
 import * as recorderActions from './store/actions/recorderActions';
 import { directReceiverTransform, opusReceiverTransform } from './transforms/receiver';
@@ -968,6 +968,7 @@ export default class RoomClient
 
 	saveFile(file)
 	{
+		console.log(file);
 		file.getBlob((err, blob) =>
 		{
 			if (err)
@@ -1045,6 +1046,8 @@ export default class RoomClient
 
 		const existingTorrent = this._webTorrent.get(magnetUri);
 
+		console.log('magnetUri', magnetUri);
+		console.log('existingTorrent', existingTorrent);
 		if (existingTorrent)
 		{
 			// Never add duplicate torrents, use the existing one instead.
@@ -1072,6 +1075,7 @@ export default class RoomClient
 		}
 
 		// let lastMove = 0;
+		console.log('torrent.magnetURI', torrent.magnetURI);
 
 		torrent.on('download', () =>
 		{
@@ -1082,7 +1086,6 @@ export default class RoomClient
 					torrent.magnetURI,
 					torrent.progress
 				));
-
 			// lastMove = Date.now();
 			// }
 		});
@@ -1205,6 +1208,8 @@ export default class RoomClient
 
 		try
 		{
+			// this.getLocalStream();
+
 			await this.sendRequest(
 				'pauseProducer', { producerId: this._micProducer.id });
 
@@ -1457,6 +1462,8 @@ export default class RoomClient
 
 		try
 		{
+			// this.getLocalStream();
+
 			if (!this._mediasoupDevice.canProduce('audio'))
 				throw new Error('cannot produce audio');
 
@@ -1627,12 +1634,15 @@ export default class RoomClient
 		{
 			logger.error('updateMic() [error:"%o"]', error);
 
+			store.dispatch(roomActions.setCloseOpen(true));
+
 			store.dispatch(requestActions.notify(
 				{
 					type : 'error',
 					text : intl.formatMessage({
 						id             : 'devices.microphoneError',
-						defaultMessage : 'An error occurred while accessing your microphone'
+						// defaultMessage : 'An error occurred while accessing your microphone'
+						defaultMessage : 'Are you sure you dont want audio or video? If you changeYour mind, select the camera icon by your address bar and then Always allow'
 					})
 				}));
 
@@ -1665,6 +1675,8 @@ export default class RoomClient
 
 		try
 		{
+			// this.getLocalStream();
+
 			if (!this._mediasoupDevice.canProduce('video'))
 				throw new Error('cannot produce video');
 
@@ -1842,12 +1854,15 @@ export default class RoomClient
 		{
 			logger.error('updateWebcam() [error:"%o"]', error);
 
+			store.dispatch(roomActions.setCloseOpen(true));
+
 			store.dispatch(requestActions.notify(
 				{
 					type : 'error',
 					text : intl.formatMessage({
-						id             : 'devices.cameraError',
-						defaultMessage : 'An error occurred while accessing your camera'
+						id             : 'devices.microphoneError',
+						// defaultMessage : 'An error occurred while accessing your camera'
+						defaultMessage : 'Are you sure you dont want audio or video? If you changeYour mind, select the camera icon by your address bar and then Always allow'
 					})
 				}));
 
@@ -1946,7 +1961,7 @@ export default class RoomClient
 
 		try
 		{
-			await this.sendRequest('moderator:clearChat');
+			await this.sendRequest('Host:clearChat');
 
 			store.dispatch(chatActions.clearChat());
 
@@ -1971,7 +1986,7 @@ export default class RoomClient
 
 		try
 		{
-			await this.sendRequest('moderator:clearFileSharing');
+			await this.sendRequest('Host:clearFileSharing');
 
 			store.dispatch(fileActions.clearFiles());
 		}
@@ -1994,7 +2009,7 @@ export default class RoomClient
 
 		try
 		{
-			await this.sendRequest('moderator:giveRole', { peerId, roleId });
+			await this.sendRequest('Host:giveRole', { peerId, roleId });
 		}
 		catch (error)
 		{
@@ -2014,7 +2029,7 @@ export default class RoomClient
 
 		try
 		{
-			await this.sendRequest('moderator:removeRole', { peerId, roleId });
+			await this.sendRequest('Host:removeRole', { peerId, roleId });
 		}
 		catch (error)
 		{
@@ -2034,7 +2049,7 @@ export default class RoomClient
 
 		try
 		{
-			await this.sendRequest('moderator:kickPeer', { peerId });
+			await this.sendRequest('Host:kickPeer', { peerId });
 		}
 		catch (error)
 		{
@@ -2054,7 +2069,7 @@ export default class RoomClient
 
 		try
 		{
-			await this.sendRequest('moderator:mute', { peerId });
+			await this.sendRequest('Host:mute', { peerId });
 		}
 		catch (error)
 		{
@@ -2074,7 +2089,7 @@ export default class RoomClient
 
 		try
 		{
-			await this.sendRequest('moderator:stopVideo', { peerId });
+			await this.sendRequest('Host:stopVideo', { peerId });
 		}
 		catch (error)
 		{
@@ -2094,7 +2109,7 @@ export default class RoomClient
 
 		try
 		{
-			await this.sendRequest('moderator:stopScreenSharing', { peerId });
+			await this.sendRequest('Host:stopScreenSharing', { peerId });
 		}
 		catch (error)
 		{
@@ -2114,7 +2129,7 @@ export default class RoomClient
 
 		try
 		{
-			await this.sendRequest('moderator:muteAll');
+			await this.sendRequest('Host:muteAll');
 		}
 		catch (error)
 		{
@@ -2134,7 +2149,7 @@ export default class RoomClient
 
 		try
 		{
-			await this.sendRequest('moderator:stopAllVideo');
+			await this.sendRequest('Host:stopAllVideo');
 		}
 		catch (error)
 		{
@@ -2154,7 +2169,7 @@ export default class RoomClient
 
 		try
 		{
-			await this.sendRequest('moderator:stopAllScreenSharing');
+			await this.sendRequest('Host:stopAllScreenSharing');
 		}
 		catch (error)
 		{
@@ -2174,7 +2189,7 @@ export default class RoomClient
 
 		try
 		{
-			await this.sendRequest('moderator:closeMeeting');
+			await this.sendRequest('Host:closeMeeting');
 		}
 		catch (error)
 		{
@@ -2330,7 +2345,7 @@ export default class RoomClient
 
 		try
 		{
-			await this.sendRequest('moderator:lowerHand', { peerId });
+			await this.sendRequest('Host:lowerHand', { peerId });
 		}
 		catch (error)
 		{
@@ -2798,6 +2813,8 @@ export default class RoomClient
 				'socket "notification" event [method:"%s", data:"%o"]',
 				notification.method, notification.data);
 
+			console.log('notification', notification);
+
 			try
 			{
 				switch (notification.method)
@@ -3189,7 +3206,7 @@ export default class RoomClient
 						break;
 					}
 
-					case 'moderator:clearChat':
+					case 'Host:clearChat':
 					{
 						store.dispatch(chatActions.clearChat());
 
@@ -3198,8 +3215,8 @@ export default class RoomClient
 						store.dispatch(requestActions.notify(
 							{
 								text : intl.formatMessage({
-									id             : 'moderator.clearChat',
-									defaultMessage : 'Moderator cleared the chat'
+									id             : 'Host.clearChat',
+									defaultMessage : 'Host cleared the chat'
 								})
 							}));
 
@@ -3235,15 +3252,15 @@ export default class RoomClient
 					}
 
 					/*
-					case 'moderator:clearFileSharing':
+					case 'Host:clearFileSharing':
 					{
 						store.dispatch(fileActions.clearFiles());
 
 						store.dispatch(requestActions.notify(
 							{
 								text : intl.formatMessage({
-									id             : 'moderator.clearFiles',
-									defaultMessage : 'Moderator cleared the files'
+									id             : 'Host.clearFiles',
+									defaultMessage : 'Host cleared the files'
 								})
 							}));
 
@@ -3296,7 +3313,9 @@ export default class RoomClient
 
 					case 'peerClosed':
 					{
-						const { peerId } = notification.data;
+						const { peerId, displayName } = notification.data;
+
+						// console.log('notification.data', notification.data);
 
 						for (const consumer of this._consumers.values())
 						{
@@ -3311,6 +3330,15 @@ export default class RoomClient
 						store.dispatch(
 							peerActions.removePeer(peerId));
 
+						store.dispatch(requestActions.notify(
+							{
+								text : intl.formatMessage({
+									id             : 'room.leavePeer',
+									defaultMessage : '{displayName} left the meeting'
+								}, {
+									displayName
+								})
+							}));
 						break;
 					}
 
@@ -3483,7 +3511,7 @@ export default class RoomClient
 						break;
 					}
 
-					case 'moderator:mute':
+					case 'Host:mute':
 					{
 						if (this._micProducer && !this._micProducer.paused)
 						{
@@ -3492,8 +3520,8 @@ export default class RoomClient
 							store.dispatch(requestActions.notify(
 								{
 									text : intl.formatMessage({
-										id             : 'moderator.muteAudio',
-										defaultMessage : 'Moderator muted your audio'
+										id             : 'Host.muteAudio',
+										defaultMessage : 'Host muted your audio'
 									})
 								}));
 						}
@@ -3501,37 +3529,37 @@ export default class RoomClient
 						break;
 					}
 
-					case 'moderator:stopVideo':
+					case 'Host:stopVideo':
 					{
 						this.disableWebcam();
 
 						store.dispatch(requestActions.notify(
 							{
 								text : intl.formatMessage({
-									id             : 'moderator.muteVideo',
-									defaultMessage : 'Moderator stopped your video'
+									id             : 'Host.muteVideo',
+									defaultMessage : 'Host stopped your video'
 								})
 							}));
 
 						break;
 					}
 
-					case 'moderator:stopScreenSharing':
+					case 'Host:stopScreenSharing':
 					{
 						this.disableScreenSharing();
 
 						store.dispatch(requestActions.notify(
 							{
 								text : intl.formatMessage({
-									id             : 'moderator.stopScreenSharing',
-									defaultMessage : 'Moderator stopped your screen sharing'
+									id             : 'Host.stopScreenSharing',
+									defaultMessage : 'Host stopped your screen sharing'
 								})
 							}));
 
 						break;
 					}
 
-					case 'moderator:kick':
+					case 'Host:kick':
 					{
 						// Need some feedback
 						this.close();
@@ -3539,7 +3567,7 @@ export default class RoomClient
 						break;
 					}
 
-					case 'moderator:lowerHand':
+					case 'Host:lowerHand':
 					{
 						this.setRaisedHand(false);
 
@@ -3703,6 +3731,22 @@ export default class RoomClient
 			}
 
 		});
+	}
+
+	getLocalStream()
+	{
+		navigator.mediaDevices.getUserMedia({ video: false, audio: true })
+			.then((stream) =>
+			{
+				window.localStream = stream; // A
+				window.localAudio.srcObject = stream; // B
+				window.localAudio.autoplay = true; // C
+			})
+			.catch((err) =>
+			{
+				// navigator.permissions.query({ name: 'push', userVisibleOnly: true });
+				console.log(err);
+			});
 	}
 
 	async _joinRoom({ joinVideo, joinAudio, returning })
@@ -4385,7 +4429,6 @@ export default class RoomClient
 					}));
 
 				// store.dispatch(settingsActions.setSelectedWebcamDevice(deviceId));
-
 				await this._updateWebcams();
 
 				producer.on('transportclose', () =>
@@ -4430,12 +4473,13 @@ export default class RoomClient
 		{
 			logger.error('addExtraVideo() [error:"%o"]', error);
 
+			store.dispatch(roomActions.setCloseOpen(true));
 			store.dispatch(requestActions.notify(
 				{
 					type : 'error',
 					text : intl.formatMessage({
-						id             : 'devices.cameraError',
-						defaultMessage : 'An error occurred while accessing your camera'
+						id             : 'devices.microphoneError',
+						defaultMessage : 'Are you sure you dont want audio or video? If you changeYour mind, select the camera icon by your address bar and then Always allow'
 					})
 				}));
 
@@ -4443,6 +4487,7 @@ export default class RoomClient
 				track.stop();
 		}
 
+		store.dispatch(roomActions.setCloseOpen(true));
 		store.dispatch(
 			meActions.setWebcamInProgress(false));
 	}
@@ -4711,7 +4756,286 @@ export default class RoomClient
 
 					this._screenSharingAudioProducer.volume = 0;
 				}
+			}
+			else
+			{
+				if (this._screenSharingProducer)
+				{
+					({ track } = this._screenSharingProducer);
 
+					await track.applyConstraints(
+						{
+							...getVideoConstrains(screenSharingResolution, aspectRatio),
+							frameRate : screenSharingFrameRate
+						}
+					);
+				}
+				if (this._screenSharingAudioProducer)
+				{
+					({ track } = this._screenSharingAudioProducer);
+
+					await track.applyConstraints(
+						{
+							sampleRate,
+							channelCount,
+							autoGainControl,
+							echoCancellation,
+							noiseSuppression,
+							sampleSize
+						}
+					);
+				}
+			}
+		}
+		catch (error)
+		{
+			logger.error('updateScreenSharing() [error:"%o"]', error);
+
+			store.dispatch(requestActions.notify(
+				{
+					type : 'error',
+					text : intl.formatMessage({
+						id             : 'devices.screenSharingError',
+						defaultMessage : 'An error occurred while accessing your screen'
+					})
+				}));
+
+			if (track)
+				track.stop();
+		}
+
+		store.dispatch(meActions.setScreenShareInProgress(false));
+	}
+
+	async updateWhiteBoardSharing({
+		start = false,
+		newResolution = null,
+		newFrameRate = null
+	} = {})
+	{
+		logger.debug('updateScreenSharing() [start:"%s"]', start);
+
+		let track;
+
+		try
+		{
+			const available = this._screenSharing.isScreenShareAvailable();
+
+			const isAudioEnabled = this._screenSharing.isAudioEnabled();
+
+			if (!available)
+				throw new Error('screen sharing not available');
+
+			if (!this._mediasoupDevice.canProduce('video'))
+				throw new Error('cannot produce video');
+
+			if (newResolution)
+				store.dispatch(settingsActions.setScreenSharingResolution(newResolution));
+
+			if (newFrameRate)
+				store.dispatch(settingsActions.setScreenSharingFrameRate(newFrameRate));
+
+			store.dispatch(meActions.setScreenShareInProgress(true));
+
+			const {
+				screenSharingResolution,
+				autoGainControl,
+				echoCancellation,
+				noiseSuppression,
+				aspectRatio,
+				screenSharingFrameRate,
+				sampleRate,
+				channelCount,
+				sampleSize,
+				opusStereo,
+				opusDtx,
+				opusFec,
+				opusPtime,
+				opusMaxPlaybackRate
+			} = store.getState().settings;
+
+			if (start)
+			{
+				let stream;
+
+				if (isAudioEnabled)
+				{
+					stream = await this._screenSharing.start({
+						...getVideoConstrains(screenSharingResolution, aspectRatio),
+						frameRate : screenSharingFrameRate,
+						sampleRate,
+						channelCount,
+						autoGainControl,
+						echoCancellation,
+						noiseSuppression,
+						sampleSize
+					});
+
+				}
+				else
+				{
+					stream = await this._screenSharing.start({
+						...getVideoConstrains(screenSharingResolution, aspectRatio),
+						frameRate : screenSharingFrameRate
+					});
+
+				}
+
+				([ track ] = stream.getVideoTracks());
+
+				const { width, height } = track.getSettings();
+
+				logger.debug('screenSharing track settings:', track.getSettings());
+
+				const networkPriority =
+					config.networkPriorities?.screenShare ?
+						config.networkPriorities?.screenShare :
+						DEFAULT_NETWORK_PRIORITIES.screenShare;
+
+				if (this._useSharingSimulcast)
+				{
+					let encodings = this._getEncodings(width, height, true);
+
+					// If VP9 is the only available video codec then use SVC.
+					const firstVideoCodec = this._mediasoupDevice
+						.rtpCapabilities
+						.codecs
+						.find((c) => c.kind === 'video');
+
+					if (firstVideoCodec.mimeType.toLowerCase() !== 'video/vp9')
+					{
+						encodings = encodings
+							.map((encoding) => ({ ...encoding, dtx: true }));
+					}
+
+					const resolutionScalings = getResolutionScalings(encodings);
+
+					/** 
+					 * TODO: 
+					 * I receive DOMException: 
+					 * Failed to execute 'addTransceiver' on 'RTCPeerConnection': 
+					 * Attempted to set an unimplemented parameter of RtpParameters.
+					encodings.forEach((encoding) =>
+					{
+						encoding.networkPriority=networkPriority;
+					});
+					*/
+					encodings[0].networkPriority=networkPriority;
+
+					this._screenSharingProducer = await this._sendTransport.produce(
+						{
+							track,
+							encodings,
+							codecOptions :
+							{
+								videoGoogleStartBitrate : 1000
+							},
+							appData :
+							{
+								source : 'screen',
+								width,
+								height,
+								resolutionScalings
+							}
+						});
+				}
+				else
+				{
+					this._screenSharingProducer = await this._sendTransport.produce({
+						track,
+						encodings : [ { networkPriority } ],
+						appData   :
+						{
+							source : 'screen',
+							width,
+							height
+						}
+					});
+				}
+
+				store.dispatch(producerActions.addProducer(
+					{
+						id            : this._screenSharingProducer.id,
+						deviceLabel   : 'screen',
+						source        : 'screen',
+						paused        : this._screenSharingProducer.paused,
+						track         : this._screenSharingProducer.track,
+						rtpParameters : this._screenSharingProducer.rtpParameters,
+						codec         : this._screenSharingProducer.rtpParameters.codecs[0].mimeType.split('/')[1]
+					}));
+
+				this._screenSharingProducer.on('transportclose', () =>
+				{
+					this._screenSharingProducer = null;
+				});
+
+				this._screenSharingProducer.on('trackended', () =>
+				{
+					store.dispatch(requestActions.notify(
+						{
+							type : 'error',
+							text : intl.formatMessage({
+								id             : 'devices.screenSharingDisconnected',
+								defaultMessage : 'Screen sharing disconnected'
+							})
+						}));
+
+					this.disableScreenSharing();
+				});
+
+				([ track ] = stream.getAudioTracks());
+
+				if (isAudioEnabled && track)
+				{
+
+					this._screenSharingAudioProducer = await this._sendTransport.produce(
+						{
+							track,
+							codecOptions :
+							{
+								opusStereo          : opusStereo,
+								opusFec             : opusFec,
+								opusDtx             : opusDtx,
+								opusMaxPlaybackRate : opusMaxPlaybackRate,
+								opusPtime           : opusPtime
+							},
+							appData :
+							{ source: 'mic' }
+						});
+
+					store.dispatch(producerActions.addProducer(
+						{
+							id            : this._screenSharingAudioProducer.id,
+							source        : 'mic',
+							paused        : this._screenSharingAudioProducer.paused,
+							track         : this._screenSharingAudioProducer.track,
+							rtpParameters : this._screenSharingAudioProducer.rtpParameters,
+							codec         : this._screenSharingAudioProducer.rtpParameters.codecs[0].mimeType.split('/')[1]
+						}));
+
+					this._screenSharingAudioProducer.on('transportclose', () =>
+					{
+						this._screenSharingAudioProducer = null;
+					});
+
+					this._screenSharingAudioProducer.on('trackended', () =>
+					{
+						store.dispatch(requestActions.notify(
+							{
+								type : 'error',
+								text : intl.formatMessage({
+									id             : 'devices.screenSharingDisconnected',
+									defaultMessage : 'Screen sharing disconnected'
+								})
+							}));
+
+						// this.disableScreenSharing();
+					});
+
+					this._screenSharingAudioProducer.volume = 0;
+				}
+
+				window.open('https://whiteboard.ejtimaa.com/', '_blank');
 			}
 			else
 			{

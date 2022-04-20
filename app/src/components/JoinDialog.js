@@ -56,6 +56,7 @@ const styles = (theme) =>
 		},
 		dialogTitle :
 		{
+			backgroundColor : 'rgb(35 31 68)'
 		},
 		dialogPaper :
 		{
@@ -115,10 +116,10 @@ const styles = (theme) =>
 		{
 			'& .Mui-selected' : {
 				color           : 'white',
-				backgroundColor : '#5F9B2D',
+				backgroundColor : 'rgba(0, 0, 0, 0.87)',
 				'&:hover'       : {
 					color           : 'white',
-					backgroundColor : '#5F9B2D'
+					backgroundColor : 'rgba(0, 0, 0, 0.87)'
 				} }
 
 		},
@@ -127,10 +128,10 @@ const styles = (theme) =>
 		{
 			'& .Mui-selected' : {
 				color           : 'white',
-				backgroundColor : '#f50057',
+				backgroundColor : 'red',
 				'&:hover'       : {
 					color           : 'white',
-					backgroundColor : '#f50057'
+					backgroundColor : 'red'
 				} }
 
 		},
@@ -302,7 +303,7 @@ const JoinDialog = ({
 		}
 	};
 
-	// TODO: prefix with the Edumeet server HTTP endpoint
+	// TODO: prefix with the Ejtimaa server HTTP endpoint
 	fetch('/auth/check_login_status', {
 		credentials    : 'include',
 		method         : 'GET',
@@ -341,7 +342,7 @@ const JoinDialog = ({
 					>
 						<Grid item>
 							{ config.logo ?
-								<img alt='Logo' src={config.logo} /> :
+								<img alt='Logo' src={config.logo} style={{ width: 150 }} /> :
 								<Typography variant='h5'> {config.title} </Typography>
 							}
 						</Grid>
@@ -500,7 +501,7 @@ const JoinDialog = ({
 									<WorkOutlineIcon/>&nbsp;
 
 									<FormattedMessage
-										id='room.joinRoomm'
+										id='label.guest'
 										defaultMessage='Guest'
 									/>
 								</ToggleButton>
@@ -509,7 +510,7 @@ const JoinDialog = ({
 									<VpnKeyIcon/>&nbsp;
 
 									<FormattedMessage
-										id='room.joinRoomm'
+										id='label.auth'
 										defaultMessage='Auth'
 									/>
 								</ToggleButton>

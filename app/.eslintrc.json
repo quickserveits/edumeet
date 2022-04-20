@@ -115,13 +115,13 @@
 		"func-call-spacing": 2,
 		"generator-star-spacing": 2,
 		"guard-for-in": 2,
-		"indent": [
-			2,
-			"tab",
-			{
-				"SwitchCase": 1
-			}
-		],
+		// "indent": [
+		// 	2,
+		// 	"tab",
+		// 	{
+		// 		"SwitchCase": 1
+		// 	}
+		// ],
 		"key-spacing": [
 			2,
 			{
@@ -137,10 +137,10 @@
 			}
 		],
 		"keyword-spacing": 2,
-		"linebreak-style": [
-			2,
-			"unix"
-		],
+		// "linebreak-style": [
+		// 	2,
+		// 	"unix"
+		// ],
 		"lines-around-comment": [
 			2,
 			{
@@ -176,7 +176,7 @@
 				"allowParens": true
 			}
 		],
-		"no-console": 2,
+		// "no-console": 2,
 		"no-const-assign": 2,
 		"no-debugger": 2,
 		"no-dupe-args": 2,
@@ -227,7 +227,7 @@
 		],
 		"no-native-reassign": 2,
 		"no-negated-in-lhs": 2,
-		"no-new": 2,
+		// "no-new": 2,
 		"no-new-func": 2,
 		"no-new-wrappers": 2,
 		"no-obj-calls": 2,

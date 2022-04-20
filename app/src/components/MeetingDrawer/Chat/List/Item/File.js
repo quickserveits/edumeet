@@ -7,7 +7,6 @@ import { useIntl, FormattedTime, FormattedMessage } from 'react-intl';
 import magnet from 'magnet-uri';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
-import DescriptionIcon from '@material-ui/icons/Description';
 import Paper from '@material-ui/core/Paper';
 import classnames from 'classnames';
 import SaveIcon from '@material-ui/icons/Save';
@@ -93,7 +92,7 @@ const styles = (theme) =>
 		},
 		'@keyframes fadeIn' : {
 			'from' : {
-				backgroundColor : '#5f9b2d5c'
+				backgroundColor : 'rgba(0, 0, 0, 0.87)5c'
 			},
 			'to' : {
 				backgroundColor : '#e0e0e085'
@@ -190,20 +189,29 @@ const File = (props) =>
 				{ file.files &&
 				<Fragment>
 					{ file.files.map((sharedFile, i) => (
-						<div
+						<a
 							className={classes.fileInfo} key={i}
-							onClick={() => roomClient.saveFile(sharedFile)}
+							href={file?.url}
+							download
+							target={'_blank'}
+							// onClick={() => roomClient.saveFile(sharedFile)}
 						>
-							<DescriptionIcon />
+							{/* <DescriptionIcon /> */}
 
 							<Typography className={classes.text}>
 								{sharedFile.name}
+								<iframe src={file?.url} width={'100%'} height={'100%'} />
+								{/* <FileViewer
+									fileType={sharedFile.name?.split('.').pop()}
+									filePath={file?.url}
+									styles={{ width: 200 }}
+								/> */}
 							</Typography>
 
 							<Tooltip
 								title={intl.formatMessage({
 									id             : 'filesharing.save',
-									defaultMessage : 'save'
+									defaultMessage : 'Save'
 								})}
 								placement='top'
 								enterDelay='700'
@@ -221,7 +229,7 @@ const File = (props) =>
 									<SaveIcon/>
 								</IconButton>
 							</Tooltip>
-						</div>
+						</a>
 					))}
 				</Fragment>
 				}
@@ -231,17 +239,26 @@ const File = (props) =>
 				{/* { (!file.active && !file.files) && */}
 				{ (!file.files) &&
 				<Fragment>
-					<div
+					<a
 						className={classes.fileInfo}
-						onClick={
-							!canShareFiles ?
-								undefined :
-								() => roomClient.handleDownload(magnetUri)
-						}
+						href={file?.url}
+						download
+						target={'_blank'}
+						// onClick={
+						// 	!canShareFiles ?
+						// 		undefined :
+						// 		() => roomClient.handleDownload(magnetUri)
+						// }
 					>
-						<DescriptionIcon />
+						{/* <DescriptionIcon /> */}
 						<Typography className={classes.text}>
 							{ magnet.decode(magnetUri).dn }
+							<iframe src={file?.url} width={'100%'} height={'100%'} />
+							{/* <FileViewer
+								fileType={magnet.decode(magnetUri).dn?.split('.').pop()}
+								filePath={file?.url}
+								styles={{ width: 200 }}
+							/> */}
 						</Typography>
 						<Tooltip
 							title={intl.formatMessage({
@@ -266,7 +283,7 @@ const File = (props) =>
 							</IconButton>
 						</Tooltip>
 
-					</div>
+					</a>
 					<div>
 
 						{ file.active &&

@@ -11,13 +11,13 @@ Starting:
 ```sh
 CURRENT_USER=$UID:$GID docker-compose up --build -d
 
-docker-compose logs -f --tail=50 edumeet
+docker-compose logs -f --tail=50 Ejtimaa
 ```
 
 Accessing endpoints:
 
-- Edumeet (app live dev): https://127.0.0.1:8443/
-- Edumeet (app build): https://127.0.0.1:3443/
+- Ejtimaa (app live dev): https://127.0.0.1:8443/
+- Ejtimaa (app build): https://127.0.0.1:3443/
 - Prometheus: http://127.0.0.1:9090/
 - Grafana: http://127.0.0.1:9091/ (user:pass `admin`:`admin`)
 
@@ -28,7 +28,7 @@ also for the websocket connection.
 Rebuild the web application bundle:
 
 ```sh
-docker-compose exec -u $UID edumeet sh -c "cd app && yarn && yarn build"
+docker-compose exec -u $UID Ejtimaa sh -c "cd app && yarn && yarn build"
 ```
 
 ## Known issues

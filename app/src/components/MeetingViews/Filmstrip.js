@@ -25,7 +25,7 @@ const styles = () =>
 			height              : '100%',
 			width               : '100%',
 			display             : 'grid',
-			overflow            : 'hidden',
+			overflow            : 'auto',
 			gridTemplateColumns : '1fr',
 			gridTemplateRows    : '1fr 0.25fr'
 		},

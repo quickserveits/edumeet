@@ -25,6 +25,8 @@ import SettingsVoiceIcon from '@material-ui/icons/SettingsVoice';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
+// import FlipCameraAndroidIcon from '@material-ui/icons/FlipCameraAndroid';
+import DeveloperBoardIcon from '@material-ui/icons/DeveloperBoard';
 
 const styles = (theme) =>
 	({
@@ -378,6 +380,35 @@ const Me = (props) =>
 		});
 	}
 
+	let webcamFlipTip;
+
+	let webcamFlipState;
+
+	if (!me.canSendWebcam || !hasVideoPermission)
+	{
+		webcamFlipState = 'unsupported';
+		webcamFlipTip = intl.formatMessage({
+			id             : 'device.videoUnsupported',
+			defaultMessage : 'Flip unsupported'
+		});
+	}
+	else if (webcamProducer && !settings.videoMuted)
+	{
+		webcamFlipState = 'on';
+		webcamFlipTip = intl.formatMessage({
+			id             : 'device.FlipVideo',
+			defaultMessage : 'Flip video'
+		});
+	}
+	else
+	{
+		webcamFlipState = 'off';
+		webcamFlipTip = intl.formatMessage({
+			id             : 'device.FlipVideo',
+			defaultMessage : 'Flip video'
+		});
+	}
+
 	let webcamState;
 
 	let webcamTip;
@@ -440,14 +471,29 @@ const Me = (props) =>
 		screenShareTooltipSetOpen
 	] = React.useState(false);
 
+	const [
+		whiteShareTooltipOpen,
+		whiteShareTooltipSetOpen
+	] = React.useState(false);
+
 	const screenShareTooltipHandleClose = () =>
 	{
 		screenShareTooltipSetOpen(false);
 	};
 
+	const whiteBoardShareTooltipHandleClose = () =>
+	{
+		whiteShareTooltipSetOpen(false);
+	};
+
 	const screenShareTooltipHandleOpen = () =>
 	{
 		screenShareTooltipSetOpen(true);
+	};
+
+	const whiteBoardShareTooltipHandleOpen = () =>
+	{
+		whiteShareTooltipOpen(true);
 	};
 
 	if (screenState === 'off' && me.screenShareInProgress && screenShareTooltipOpen)
@@ -581,7 +627,7 @@ const Me = (props) =>
 					>
 						<FormattedMessage
 							id='room.me'
-							defaultMessage='ME'
+							defaultMessage='Me'
 						/>
 					</p>
 					{/* /ME TAG */}
@@ -762,6 +808,77 @@ const Me = (props) =>
 									</Tooltip>
 								}
 								{/* /SCREENSHARING */}
+								{me.browser.platform !== 'mobile' &&
+									<Tooltip open={whiteShareTooltipOpen}
+										onClose={whiteBoardShareTooltipHandleClose}
+										onOpen={whiteBoardShareTooltipHandleOpen}
+										title={'WhiteBoard'}
+										placement={height <= 190 ? 'bottom' : 'left'}
+									>
+										<div>
+											<Fab
+												aria-label={intl.formatMessage({
+													id             : 'device.startScreenSharing1',
+													defaultMessage : 'Start screen sharing'
+												})}
+												style={{ ...controls.item.style }}
+												className={classnames('fab')}
+												// disabled={
+												// 	!hasScreenPermission ||
+												// 		!me.canShareScreen ||
+												// 		me.screenShareInProgress
+												// }
+												color={screenState === 'on' ? 'primary' : 'default'}
+												size={controls.item.size}
+
+												onClick={() =>
+												{
+													if (screenState === 'off')
+														roomClient.updateWhiteBoardSharing({ start: true });
+													else if (screenState === 'on')
+														roomClient.disableScreenSharing();
+												}}
+											>
+												{/* <a href='https://whiteboard.ejtimaa.com/' target={'_blank'}> */}
+												<DeveloperBoardIcon />
+												{/* </a> */}
+											</Fab>
+										</div>
+									</Tooltip>
+								}
+								{/* Camera Switch */}
+								{/* { me.browser.platform === 'mobile' &&
+								<Tooltip
+									title={webcamFlipTip}
+									placement={height <= 190 ? 'bottom' : 'left'}
+								>
+									<>
+										<Fab
+											aria-label={intl.formatMessage({
+												id             : 'device.flipVideo',
+												defaultMessage : 'Flip video'
+											})}
+											style={{ ...controls.item.style }}
+											className={classnames('fab')}
+											disabled={
+												!me.canSendWebcam ||
+											!hasVideoPermission ||
+											me.webcamInProgress
+											}
+											color={webcamFlipState === 'on' ? 'primary' : 'default'}
+											size={controls.item.size}
+
+											onClick={() =>
+											{
+												roomClient.updateWebcam({ restart: true, newDeviceId: 'bacd' });
+											}}
+										>
+											<FlipCameraAndroidIcon />
+										</Fab>
+									</>
+								</Tooltip>
+								} */}
+								{/* /Camera Switch */}
 
 								{/* MORE BUTTON */}
 								{advancedMode &&
@@ -888,7 +1005,7 @@ const Me = (props) =>
 							>
 								<FormattedMessage
 									id='room.me'
-									defaultMessage='ME'
+									defaultMessage='Me'
 								/>
 							</p>
 							<div
@@ -1000,7 +1117,7 @@ const Me = (props) =>
 						>
 							<FormattedMessage
 								id='room.me'
-								defaultMessage='ME'
+								defaultMessage='Me'
 							/>
 						</p>
 

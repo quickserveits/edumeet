@@ -1,6 +1,6 @@
 import debug from 'debug';
 
-const APP_NAME = 'edumeet';
+const APP_NAME = 'Ejtimaa';
 
 export default class Logger
 {

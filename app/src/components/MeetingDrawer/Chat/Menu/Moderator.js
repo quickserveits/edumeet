@@ -28,22 +28,22 @@ const styles = (theme) =>
 		}
 	});
 
-const ChatModerator = (props) =>
+const ChatHost = (props) =>
 {
 	const intl = useIntl();
 
 	const {
 		roomClient,
-		isChatModerator,
-		isFileSharingModerator,
+		isChatHost,
+		isFileSharingHost,
 		room,
 		classes
 	} = props;
 
-	if (!isChatModerator)
+	if (!isChatHost)
 		return null;
 
-	if (!isFileSharingModerator)
+	if (!isFileSharingHost)
 		return null;
 
 	const handleClearChat = () =>
@@ -55,8 +55,8 @@ const ChatModerator = (props) =>
 		<ul className={classes.root}>
 			<li className={classes.listheader}>
 				<FormattedMessage
-					id='room.moderatoractions'
-					defaultMessage='Moderator actions'
+					id='room.Hostactions'
+					defaultMessage='Host actions'
 				/>
 			</li>
 			<Button
@@ -79,13 +79,13 @@ const ChatModerator = (props) =>
 	);
 };
 
-ChatModerator.propTypes =
+ChatHost.propTypes =
 {
-	roomClient             : PropTypes.any.isRequired,
-	isFileSharingModerator : PropTypes.bool,
-	isChatModerator        : PropTypes.bool,
-	room                   : PropTypes.object,
-	classes                : PropTypes.object.isRequired
+	roomClient        : PropTypes.any.isRequired,
+	isFileSharingHost : PropTypes.bool,
+	isChatHost        : PropTypes.bool,
+	room              : PropTypes.object,
+	classes           : PropTypes.object.isRequired
 };
 
 const makeMapStateToProps = () =>
@@ -94,9 +94,9 @@ const makeMapStateToProps = () =>
 
 	const mapStateToProps = (state) =>
 		({
-			isChatModerator        : hasPermission(state),
-			isFileSharingModerator : hasPermission(state),
-			room                   : state.room
+			isChatHost        : hasPermission(state),
+			isFileSharingHost : hasPermission(state),
+			room              : state.room
 		});
 
 	return mapStateToProps;
@@ -116,4 +116,4 @@ export default withRoomContext(connect(
 			);
 		}
 	}
-)(withStyles(styles)(ChatModerator)));
+)(withStyles(styles)(ChatHost)));

@@ -7,6 +7,7 @@ import marked from 'marked';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import { useIntl, FormattedTime } from 'react-intl';
+import { LinkPreview } from '@dhaiwat10/react-link-preview';
 
 const styles = (theme) =>
 	({
@@ -14,7 +15,7 @@ const styles = (theme) =>
 		{
 			display         : 'flex',
 			flexShrink      : 0,
-			backgroundColor : '#5f9b2d5c',
+			backgroundColor : 'rgba(0, 0, 0, 0.87)5c',
 			boxShadow       : 'none',
 			padding         : theme.spacing(0),
 			wordWrap        : 'break-word',
@@ -93,14 +94,17 @@ const Message = (props) =>
 {
 	const intl = useIntl();
 
+	let url='';
+
 	const linkRenderer = new marked.Renderer();
 
 	linkRenderer.link = (href, title, text) =>
 	{
 		title = title ? title : href;
 		text = text ? text : href;
+		url = href;
 
-		return `<a target='_blank' href='${ href }' title='${ title }'>${ text }</a>`;
+		return `<a target='_blank' href='${ href }' title='${ title }'>${ text }<iframe src='${href}' /></a>`;
 	};
 
 	const allowedHTMLNodes = {
@@ -181,6 +185,7 @@ const Message = (props) =>
 						allowedHTMLNodes
 					) }}
 				/>
+				{url?<LinkPreview url={url} width='200px' />:''}
 				{/* /Text */}
 			</div>
 			{/* Content */}

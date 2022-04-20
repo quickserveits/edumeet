@@ -28,9 +28,10 @@ import WakeLock from 'react-wakelock-react16';
 import ExtraVideo from './Controls/ExtraVideo';
 import ButtonControlBar from './Controls/ButtonControlBar';
 import Help from './Controls/Help';
-import About from './Controls/About';
+// import About from './Controls/About';
 import RolesManager from './Controls/RolesManager';
 import LeaveDialog from './LeaveDialog';
+import HelpeDialog from './HelpeDialog';
 import { config } from '../config';
 
 const TIMEOUT = config.hideTimeout || 5000;
@@ -44,6 +45,17 @@ const styles = (theme) =>
 			height               : '100%',
 			backgroundColor      : 'var(--background-color)',
 			backgroundImage      : `url(${config.background})`,
+			backgroundAttachment : 'fixed',
+			backgroundPosition   : 'center',
+			backgroundSize       : 'cover',
+			backgroundRepeat     : 'no-repeat'
+		},
+		root1 :
+		{
+			display              : 'flex',
+			width                : '100%',
+			height               : '100%',
+			backgroundImage      : `url('')`,
 			backgroundAttachment : 'fixed',
 			backgroundPosition   : 'center',
 			backgroundSize       : 'cover',
@@ -286,9 +298,9 @@ class Room extends React.PureComponent
 				{ room.helpOpen &&
 					<Help />
 				}
-				{ room.aboutOpen &&
+				{/* { room.aboutOpen &&
 					<About />
-				}
+				} */}
 				{ room.rolesManagerOpen &&
 					<RolesManager />
 				}
@@ -296,6 +308,9 @@ class Room extends React.PureComponent
 					<LeaveDialog/>
 				}
 
+				{ room.messageOpen &&
+					<HelpeDialog/>
+				}
 			</div>
 		);
 	}

@@ -11,6 +11,10 @@ import File from './Item/File';
 import EmptyAvatar from '../../../../images/avatar-empty.jpeg';
 import Button from '@material-ui/core/Button';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import { FileDrop } from 'react-file-drop';
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+import { app } from '../../../../firebase/firebase';
+import { withRoomContext } from '../../../../RoomContext';
 
 const styles = (theme) =>
 	({
@@ -215,10 +219,14 @@ class MessageList extends React.Component
 			myPicture,
 			classes,
 			files,
+			displayName,
+			peerId,
 			me,
 			peers,
 			intl
 		} = this.props;
+
+		console.log('this.props', this.props.roomClient);
 
 		const items = [ ...chat.messages, ...files.files ];
 
@@ -233,164 +241,214 @@ class MessageList extends React.Component
 				items.reverse();
 		}
 
+		const uploadShareFile = async (filess, url) =>
+		{
+			await this.props.roomClient.shareFiles({
+				type       : 'file',
+				time       : Date.now(),
+				sender     : 'response',
+				isRead     : null,
+				name       : displayName,
+				peerId     : peerId,
+				picture    : myPicture,
+				attachment : filess,
+				url        : url
+			});
+		};
+
+		const attachFile = async (files1) =>
+		{
+			console.log('files1', files1);
+
+			const filess = files1;
+
+			if (filess.length > 0)
+			{
+				const storage = getStorage(app);
+
+				const storageRef = ref(storage, filess[0].name);
+
+				const uploadTask = uploadBytesResumable(storageRef, filess[0]);
+
+				uploadTask.on(
+					'state_changed',
+					(snapshot) => {},
+					(error) =>
+					{
+						console.log(error);
+					},
+					() =>
+					{
+						getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) =>
+						{
+							console.log('File available at', downloadURL);
+
+							uploadShareFile(filess, downloadURL);
+						});
+					}
+				);
+			}
+		};
+
 		return (
 			<React.Fragment>
 				<div id='chatList' className={classes.root} ref={this.refList}>
-					<Button
-						variant='contained'
-						color='primary'
-						size='small'
-						onClick={() => this.handleGoToNewest()}
-						className={
-							classnames(
-								classes.buttonGoToNewest,
-								chat.countUnread > 0 ? 'show': 'hide',
-								chat.order === 'asc' ? 'asc' : 'desc'
-							)
-						}
-						endIcon={
-							(chat.order === 'asc' ?
-								<ChevronLeftIcon
-									style={{
-										color     : 'white',
-										transform : 'rotate(270deg)'
-									}}
-								/> :
-								<ChevronLeftIcon
-									style={{
-										color     : 'white',
+					<FileDrop onDrop={(files1) => attachFile(files1)} className={classes.root}>
+						<Button
+							variant='contained'
+							color='primary'
+							size='small'
+							onClick={() => this.handleGoToNewest()}
+							className={
+								classnames(
+									classes.buttonGoToNewest,
+									chat.countUnread > 0 ? 'show': 'hide',
+									chat.order === 'asc' ? 'asc' : 'desc'
+								)
+							}
+							endIcon={
+								(chat.order === 'asc' ?
+									<ChevronLeftIcon
+										style={{
+											color     : 'white',
+											transform : 'rotate(270deg)'
+										}}
+									/> :
+									<ChevronLeftIcon
+										style={{
+											color     : 'white',
 										transform : 'rotate(90deg)'
-									}}
-								/>
-							)
-						}
-					>
-						( {chat.countUnread} )&nbsp;
-						<FormattedMessage
-							id='label.chatNewMessages'
-							defaultMessage='New messages'
-						/>
-					</Button>
-
-					{items.length === 0
-						? (<div>
-							{intl.formatMessage({
-								id             : 'label.chatNoMessages',
-								defaultMessage : 'No messages'
-							})}
-
-						</div>)
-						:
-						items.map((item, index) =>
-						{
-							const prev = (index > 0) ?
-								`${items[index-1].peerId}-${items[index-1].name}` : null;
-
-							const curr = `${item.peerId}-${item.name}`;
-
-							const next = (index < items.length - 1) ?
-								`${items[index+1].peerId}-${items[index+1].name}` : null;
-
-							let format = null;
-
-							if (curr !== prev && curr !== next)
-								format = 'single';
-							else if (curr !== prev && curr === next)
-								format = 'combinedBegin';
-							else if (curr === prev && curr === next)
-								format = 'combinedMiddle';
-							else if (curr === prev && curr !== next)
-								format = 'combinedEnd';
-
-							if (item.type === 'message')
-							{
-								const message = (
-									<Message
-										refMessage={
-											(el) => el && this.setWidth(
-												el
-											)
-										}
-										key={item.time}
-										time={item.time}
-										avatar={(item.sender === 'response' ?
-											item.picture : myPicture) || EmptyAvatar
-										}
-										name={item.name}
-										text={item.text}
-										isseen={item.isRead}
-										sender={me.id === item.peerId ?
-											'client' : item.sender
-										}
-										self={item.sender === 'client'}
-										format={format}
-									/>);
-
-								return message;
-							}
-
-							else if (item.type === 'file')
-							{
-
-								// let displayName;
-
-								let filePicture;
-
-								if (me.id === item.peerId)
-								{
-									/*
-									displayName = intl.formatMessage({
-										id             : 'room.me',
-										defaultMessage : 'Me'
-									});
-									*/
-
-									filePicture = me.picture;
-								}
-								else if (peers[item.peerId])
-								{
-									// displayName = peers[item.peerId].displayName;
-
-									filePicture = peers[item.peerId].picture;
-								}
-								else
-								{
-									/*
-									displayName = intl.formatMessage({
-										id             : 'label.unknown',
-										defaultMessage : 'Unknown'
-									});
-									*/
-								}
-
-								return (
-									<File
-										refMessage={
-											(el) => el && this.setWidth(
-												el
-											)
-										}
-										key={item.time}
-										time={item.time}
-										magnetUri={item.magnetUri}
-										name={item.name}
-										avatar={filePicture || EmptyAvatar}
-										isseen={item.isRead}
-										sender={me.id === item.peerId ?
-											'client' : item.sender
-										}
-										self={item.sender === 'client'}
-										format={format}
-
+										}}
 									/>
-								);
-
+								)
 							}
+						>
+							( {chat.countUnread} )&nbsp;
+							<FormattedMessage
+								id='label.chatNewMessages'
+								defaultMessage='New messages'
+							/>
+						</Button>
 
-							return 0;
-						})
-					}
+						{items.length === 0
+							? (<div>
+								{intl.formatMessage({
+									id             : 'label.chatNoMessages',
+									defaultMessage : 'No messages'
+								})}
 
+							</div>)
+							:
+							items.map((item, index) =>
+							{
+								const prev = (index > 0) ?
+									`${items[index-1].peerId}-${items[index-1].name}` : null;
+
+								const curr = `${item.peerId}-${item.name}`;
+
+								const next = (index < items.length - 1) ?
+									`${items[index+1].peerId}-${items[index+1].name}` : null;
+
+								let format = null;
+
+								if (curr !== prev && curr !== next)
+									format = 'single';
+								else if (curr !== prev && curr === next)
+									format = 'combinedBegin';
+								else if (curr === prev && curr === next)
+									format = 'combinedMiddle';
+								else if (curr === prev && curr !== next)
+									format = 'combinedEnd';
+
+								if (item.type === 'message')
+								{
+									const message = (
+										<Message
+											refMessage={
+												(el) => el && this.setWidth(
+													el
+												)
+											}
+											key={item.time}
+											time={item.time}
+											avatar={(item.sender === 'response' ?
+												item.picture : myPicture) || EmptyAvatar
+											}
+											name={item.name}
+											text={item.text}
+											isseen={item.isRead}
+											sender={me.id === item.peerId ?
+												'client' : item.sender
+											}
+											self={item.sender === 'client'}
+											format={format}
+										/>);
+
+									return message;
+								}
+
+								else if (item.type === 'file')
+								{
+
+									// let displayName;
+
+									let filePicture;
+
+									if (me.id === item.peerId)
+									{
+										/*
+										displayName = intl.formatMessage({
+											id             : 'room.me',
+											defaultMessage : 'Me'
+										});
+										*/
+
+										filePicture = me.picture;
+									}
+									else if (peers[item.peerId])
+									{
+										// displayName = peers[item.peerId].displayName;
+
+										filePicture = peers[item.peerId].picture;
+									}
+									else
+									{
+										/*
+										displayName = intl.formatMessage({
+											id             : 'label.unknown',
+											defaultMessage : 'Unknown'
+										});
+										*/
+									}
+
+									return (
+										<File
+											refMessage={
+												(el) => el && this.setWidth(
+													el
+												)
+											}
+											key={item.time}
+											time={item.time}
+											magnetUri={item.magnetUri}
+											name={item.name}
+											avatar={filePicture || EmptyAvatar}
+											isseen={item.isRead}
+											sender={me.id === item.peerId ?
+												'client' : item.sender
+											}
+											self={item.sender === 'client'}
+											format={format}
+
+										/>
+									);
+
+								}
+
+								return 0;
+							})
+						}
+					</FileDrop>
 				</div>
 			</React.Fragment>
 		);
@@ -408,17 +466,22 @@ MessageList.propTypes =
 	peers            : PropTypes.object.isRequired,
 	intl             : PropTypes.object.isRequired,
 	setIsScrollEnd   : PropTypes.func.isRequired,
-	setIsMessageRead : PropTypes.func.isRequired
+	setIsMessageRead : PropTypes.func.isRequired,
+	displayName      : PropTypes.string,
+	roomClient       : PropTypes.object.isRequired,
+	peerId           : PropTypes.string.isRequired
 
 };
 
 const mapStateToProps = (state) =>
 	({
-		chat      : state.chat,
-		myPicture : state.me.picture,
-		me        : state.me,
-		peers     : state.peers,
-		files     : state.files
+		chat        : state.chat,
+		displayName : state.settings.displayName,
+		peerId      : state.me.id,
+		myPicture   : state.me.picture,
+		me          : state.me,
+		peers       : state.peers,
+		files       : state.files
 
 	});
 
@@ -434,20 +497,24 @@ const mapDispatchToProps = (dispatch) =>
 		}
 	});
 
-export default connect(
-	mapStateToProps,
-	mapDispatchToProps,
-	null,
-	{
-		areStatesEqual : (next, prev) =>
+export default withRoomContext(
+	connect(
+		mapStateToProps,
+		mapDispatchToProps,
+		null,
 		{
-			return (
-				prev.chat === next.chat &&
-				prev.files === next.files &&
-				prev.me.picture === next.me.picture &&
-				prev.me === next.me &&
-				prev.peers === next.peers
-			);
+			areStatesEqual : (next, prev) =>
+			{
+				return (
+					prev.room === next.room &&
+					prev.chat === next.chat &&
+					prev.files === next.files &&
+					prev.me.picture === next.me.picture &&
+					prev.me === next.me &&
+					prev.settings.displayName === next.settings.displayName &&
+					prev.peers === next.peers
+				);
+			}
 		}
-	}
-)(withStyles(styles)(injectIntl(MessageList)));
+	)(withStyles(styles)(injectIntl(MessageList)))
+);

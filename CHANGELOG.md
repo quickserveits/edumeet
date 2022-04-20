@@ -1,17 +1,36 @@
 # Changelog
 
+## 3.5.2 20-04-2022
+* Added  theme
+* File Efect 
+  1. TopAppBar
+  2. toolareaAction
+  3. toolarea
+  4. Room
+## 3.5.1
+* Updated Documentation
+
 ## 3.5.0
 
 ### Added
 
-* Local Recording
-  * IndexedDB and fallback to memory (array of blobs)
-  * CLIENT.recoverRecording(`DB_NAME`)
-  * Add new permission LOCAL_RECORD_ROOM
-## 3.5.0 or Next Version
-
-### Added
-
+* Update build steps
+* Update documentations
+* Major chat refactoring
+  * Added chat badge displaying unread messages
+  * Merged file sharing + chat
+  * Save chat history (both in leave screen and in chat directly)
+  * Sorting messages
+  * Format messages
+  * Combine messages
+* Local recording (chrome, firefox, edge)
+  * This is still default off in config because of bad UX connected to getUserMedias
+* New app configuration system
+* New server configuration system
+* Add leaving room confirmation dialog
+* New audio config with audio profiles
+* New translations
+* Screen Sharing now supports audio (chrome, edge)
 * Add QoS set DSCP bits in IP header according to new option networkPriorities in app config
   Our media traffic should get now higher priority where QoS has been implemented.
   Routers will add higher priority or put media packets to low latency queue.
@@ -20,11 +39,36 @@
   Hopefully it will help and add little bit more priority lower latency in congested networks.
   At the time of this writing it is only implemented in Chrome.
 
+### Improved
+* Scalability and performance: 
+  * Improvements for handling simulcast and video container size
+  * Improved performance for encryption of media (+25% capacity)
+  * Improved balancing of peers to workers
+* CSS for mobile
+* UI improvements (bugs fixes) #922
+* Improved button layout
+* Improved login dialog
+* Added bcrypt for local auth strategy
+ 
+
+### Fixed 
+* Fix auto unmute buttons on separate bar
+* Fix browser version comparison
+* Safari Screen Share Bug Fix
+* Fix session overwrites
+* Fix loosing the current language after leaving the room)
+* Extra video duplication fix
+* Fix loosing the current language after leaving the room)
+* Fix notifications (they were displayed always in English)
+* Translation updates
+* A lot of bugs in auth
+* Sanitizations for room names
+
 ## 3.4.0
 
 ### Added
 
-* Multiparty meeting renamed to edumeet
+* Multiparty meeting renamed to Ejtimaa
 * Merged room selector- and join- dialog - default keyboard focus on login field
 * Localization selectable
 * Added aspect ratio 16 : 9  and this is default now, ref #439
@@ -37,8 +81,8 @@
   * Add functions to client for modifying roles live
   * Ability to give roles to users
   * Add new permission to config
-* Add room to userMapping. Example of giving moderator if there is no authenticated user
-* Promote all peers from lobby when a peer joins with the PROMOTE_PEER permission and activateOnHostJoin is true in config
+* Add room to userMapping. Example of giving Host if there is no authenticated user
+* Admit all peers from lobby when a peer joins with the PROMOTE_PEER permission and activateOnHostJoin is true in config
 * Make menus more intuitive on mobile
 * Simplify electron screenshare check
 * Logo support
@@ -106,7 +150,7 @@ from last master version:
 * Add comma to prometheus config code
 * Removed code that is problematic and also unused
 * Remove duplicated callbackURL
-* Fix moderator buttons layout
+* Fix Host buttons layout
 * Fix: Special chars are not sanitized in URL
 * Fix another roomId bug
 * Tidy: replace obj.entries with obj.values to avoid unused key
@@ -115,7 +159,7 @@ from last master version:
 ## 3.3
 
 * Add: Rooms now scale across cores
-* Add: Permissions and roles. Users can now have different roles (moderator, admin etc.) that give different permissions.
+* Add: Permissions and roles. Users can now have different roles (Host, admin etc.) that give different permissions.
 * Add: TURN API or fallback TURN server
 * Add: Configurable room size limit
 * Add: Prometheus monitoring support

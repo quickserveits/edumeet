@@ -20,14 +20,14 @@ jobs:
     steps:
     - uses: actions/checkout@v2
       with:
-          path: edumeet
+          path: Ejtimaa
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v2
       with:
         node-version: ${{ matrix.node-version }}
     - run: |
         sudo DEBIAN_FRONTEND=noninteractive apt-get -yq install jq npm build-essential || true
-        cd edumeet
+        cd Ejtimaa
         cp server/config/config.example.js server/config/config.js
         cp app/public/config/config.example.js app/public/config/config.js
         touch server/config/config.yaml
@@ -43,19 +43,19 @@ jobs:
         mkdir -p /home/runner/package
         cd /home/runner/package
         mkdir DEBIAN
-        mkdir -p usr/local/src/edumeet/server
+        mkdir -p usr/local/src/Ejtimaa/server
         mkdir -p etc/systemd/system/
         tar -xf /home/runner/work/***/***/***/server/***-server-$VERSION.tgz package/ 1>/dev/null 2>/dev/null || true
-        mv package/* usr/local/src/edumeet/server/
+        mv package/* usr/local/src/Ejtimaa/server/
         mv /home/runner/work/***/***/***/*.service etc/systemd/system/
         rm -rf package
         touch DEBIAN/md5sums
         touch DEBIAN/md5sums
         touch DEBIAN/control
         find . -type f ! -regex '.*.hg.*' ! -regex '.*?debian-binary.*' ! -regex '.*?DEBIAN.*' -printf '%P ' | xargs md5sum  1>/dev/null 2>/dev/null || true
-        echo """Package: edumeet-develop
+        echo """Package: Ejtimaa-develop
         Version: $VERSION
-        Maintainer: eduMeet team (https://github.com/edumeet)
+        Maintainer: Ejtimaa team (https://github.com/Ejtimaa)
         Section: admin
         Date : $DATE
         Architecture: amd64
@@ -64,23 +64,23 @@ jobs:
         Depends: nodejs (>= 14), redis
         """ > DEBIAN/control
         echo """#!/bin/bash
-        mkdir -p /etc/edumeet/
-        cp /usr/local/src/edumeet/server/config/config.yaml /usr/local/src/edumeet/server/dist/config/
-        ln -s /usr/local/src/edumeet/server/config/config.js /etc/edumeet/server-config.js || true
-        ln -s /usr/local/src/edumeet/server/dist/config/config.yaml /etc/edumeet/server-config.yaml || true
-        ln -s /usr/local/src/edumeet/server/public/config/config.js /etc/edumeet/client-config.js || true
+        mkdir -p /etc/Ejtimaa/
+        cp /usr/local/src/Ejtimaa/server/config/config.yaml /usr/local/src/Ejtimaa/server/dist/config/
+        ln -s /usr/local/src/Ejtimaa/server/config/config.js /etc/Ejtimaa/server-config.js || true
+        ln -s /usr/local/src/Ejtimaa/server/dist/config/config.yaml /etc/Ejtimaa/server-config.yaml || true
+        ln -s /usr/local/src/Ejtimaa/server/public/config/config.js /etc/Ejtimaa/client-config.js || true
         systemctl daemon-reload
-        systemctl enable edumeet
-        echo "eduMeet multiparty meeting is installed (develop branch version), but you need the configure the server and client with your ip adresses in configuration files under /etc/meeting/ \n"
-        echo "\n\nPlease visit https://github.com/edumeet/edumeet/tree/develop for configuration details.\n\n"
-        echo "\n\nAfter the configuration, you can start service with 'sudo systemctl start edumeet' command.\n\n"
+        systemctl enable Ejtimaa
+        echo "Ejtimaa multiparty meeting is installed (develop branch version), but you need the configure the server and client with your ip adresses in configuration files under /etc/meeting/ \n"
+        echo "\n\nPlease visit https://github.com/Ejtimaa/Ejtimaa/tree/develop for configuration details.\n\n"
+        echo "\n\nAfter the configuration, you can start service with 'sudo systemctl start Ejtimaa' command.\n\n"
         """ > DEBIAN/postinst
         chmod 775 DEBIAN/postinst
         cd ../
         dpkg-deb -Zgzip --build package
-        mv /home/runner/package.deb /home/runner/edumeet-develop.deb
+        mv /home/runner/package.deb /home/runner/Ejtimaa-develop.deb
     - name : Release Package
       uses: actions/upload-artifact@v2
       with:
-        name: edumeet-develop
-        path: "/home/runner/edumeet-develop.deb"
+        name: Ejtimaa-develop
+        path: "/home/runner/Ejtimaa-develop.deb"

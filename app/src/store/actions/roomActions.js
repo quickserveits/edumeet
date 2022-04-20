@@ -100,6 +100,12 @@ export const setLeaveOpen = (leaveOpen) =>
 		payload : { leaveOpen }
 	});
 
+export const setCloseOpen = (messageOpen) =>
+	({
+		type    : 'SET_MESSAGE_OPEN',
+		payload : { messageOpen }
+	});
+
 export const setSettingsTab = (tab) =>
 	({
 		type    : 'SET_SETTINGS_TAB',

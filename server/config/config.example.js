@@ -2,36 +2,32 @@
 // const fs = require('fs');
 // const tunnel = require('tunnel');
 
-const userRoles = require('../lib/access/roles');
+const userRoles = require("../lib/access/roles");
+
+const { BYPASS_ROOM_LOCK, BYPASS_LOBBY } = require("../lib/access/access");
 
 const {
-	BYPASS_ROOM_LOCK,
-	BYPASS_LOBBY
-} = require('../lib/access/access');
-
-const {
-	CHANGE_ROOM_LOCK,
-	PROMOTE_PEER,
-	MODIFY_ROLE,
-	SEND_CHAT,
-	MODERATE_CHAT,
-	SHARE_AUDIO,
-	SHARE_VIDEO,
-	SHARE_SCREEN,
-	EXTRA_VIDEO,
-	SHARE_FILE,
-	MODERATE_FILES,
-	MODERATE_ROOM,
-	LOCAL_RECORD_ROOM
-} = require('../lib/access/perms');
+  CHANGE_ROOM_LOCK,
+  PROMOTE_PEER,
+  MODIFY_ROLE,
+  SEND_CHAT,
+  MODERATE_CHAT,
+  SHARE_AUDIO,
+  SHARE_VIDEO,
+  SHARE_SCREEN,
+  EXTRA_VIDEO,
+  SHARE_FILE,
+  MODERATE_FILES,
+  MODERATE_ROOM,
+  LOCAL_RECORD_ROOM,
+} = require("../lib/access/perms");
 
 // const AwaitQueue = require('awaitqueue');
 // const axios = require('axios');
 
-module.exports =
-{
-	// Auth conf
-	/*
+module.exports = {
+  // Auth conf
+  /*
 	auth :
 	{
 		// Always enabled if configured
@@ -62,7 +58,7 @@ module.exports =
 				client_id     : '',
 				client_secret : '',
 				scope       		: 'openid email profile',
-				// where client.example.com is your edumeet server
+				// where client.example.com is your Ejtimaa server
 				redirect_uri  : 'https://client.example.com/auth/callback'
 			},
 			/*
@@ -79,13 +75,13 @@ module.exports =
                  	})
   				}
 			}
-			*//*
+			*/ /*
 		},
 		saml :
 		{
-			// where edumeet.example.com is your edumeet server
-			callbackUrl    : 'https://edumeet.example.com/auth/callback',
-			issuer         : 'https://edumeet.example.com',
+			// where Ejtimaa.example.com is your Ejtimaa server
+			callbackUrl    : 'https://Ejtimaa.example.com/auth/callback',
+			issuer         : 'https://Ejtimaa.example.com',
 			entryPoint     : 'https://openidp.feide.no/simplesaml/saml2/idp/SSOService.php',
 			privateCert    : fs.readFileSync('config/saml_privkey.pem', 'utf-8'),
 			signingCert    : fs.readFileSync('config/saml_cert.pem', 'utf-8'),
@@ -119,11 +115,11 @@ module.exports =
 		}
 	},
 	*/
-	// This logger class will have the log function
-	// called every time there is a room created or destroyed,
-	// or peer created or destroyed. This would then be able
-	// to log to a file or external service.
-	/* StatusLogger          : class
+  // This logger class will have the log function
+  // called every time there is a room created or destroyed,
+  // or peer created or destroyed. This would then be able
+  // to log to a file or external service.
+  /* StatusLogger          : class
 	{
 		constructor()
 		{
@@ -151,29 +147,29 @@ module.exports =
 				});
 		}
 	}, */
-	// This function will be called on successful login through oidc.
-	// Use this function to map your oidc userinfo to the Peer object.
-	// The roomId is equal to the room name.
-	// See examples below.
-	// Examples:
-	/*
-	// All authenticated users will be MODERATOR and AUTHENTICATED
+  // This function will be called on successful login through oidc.
+  // Use this function to map your oidc userinfo to the Peer object.
+  // The roomId is equal to the room name.
+  // See examples below.
+  // Examples:
+  /*
+	// All authenticated users will be Host and AUTHENTICATED
 	userMapping : async ({ peer, room, roomId, userinfo }) =>
 	{
-		peer.addRole(userRoles.MODERATOR);
+		peer.addRole(userRoles.Host);
 		peer.addRole(userRoles.AUTHENTICATED);
 	},
 	// All authenticated users will be AUTHENTICATED,
-	// and those with the moderator role set in the userinfo
-	// will also be MODERATOR
+	// and those with the Host role set in the userinfo
+	// will also be Host
 	userMapping : async ({ peer, room, roomId, userinfo }) =>
 	{
 		if (
 			Array.isArray(userinfo.meetRoles) &&
-			userinfo.meetRoles.includes('moderator')
+			userinfo.meetRoles.includes('Host')
 		)
 		{
-			peer.addRole(userRoles.MODERATOR);
+			peer.addRole(userRoles.Host);
 		}
 
 		if (
@@ -186,7 +182,7 @@ module.exports =
 
 		peer.addRole(userRoles.AUTHENTICATED);
 	},
-	// First authenticated user will be moderator,
+	// First authenticated user will be Host,
 	// all others will be AUTHENTICATED
 	userMapping : async ({ peer, room, roomId, userinfo }) =>
 	{
@@ -198,117 +194,106 @@ module.exports =
 				peer.addRole(userRoles.AUTHENTICATED);
 			else
 			{
-				peer.addRole(userRoles.MODERATOR);
+				peer.addRole(userRoles.Host);
 				peer.addRole(userRoles.AUTHENTICATED);
 			}
 		}
 	},
 	// All authenticated users will be AUTHENTICATED,
 	// and those with email ending with @example.com
-	// will also be MODERATOR
+	// will also be Host
 	userMapping : async ({ peer, room, roomId, userinfo }) =>
 	{
 		if (userinfo.email && userinfo.email.endsWith('@example.com'))
 		{
-			peer.addRole(userRoles.MODERATOR);
+			peer.addRole(userRoles.Host);
 		}
 
 		peer.addRole(userRoles.AUTHENTICATED);
 	},
 	*/
-	// eslint-disable-next-line no-unused-vars
-	userMapping : async ({ peer, room, roomId, userinfo }) =>
-	{
-		if (userinfo.picture != null)
-		{
-			if (!userinfo.picture.match(/^http/g))
-			{
-				peer.picture = `data:image/jpeg;base64, ${userinfo.picture}`;
-			}
-			else
-			{
-				peer.picture = userinfo.picture;
-			}
-		}
-		if (userinfo['urn:oid:0.9.2342.19200300.100.1.60'] != null)
-		{
-			peer.picture = `data:image/jpeg;base64, ${userinfo['urn:oid:0.9.2342.19200300.100.1.60']}`;
-		}
+  // eslint-disable-next-line no-unused-vars
+  userMapping: async ({ peer, room, roomId, userinfo }) => {
+    if (userinfo.picture != null) {
+      if (!userinfo.picture.match(/^http/g)) {
+        peer.picture = `data:image/jpeg;base64, ${userinfo.picture}`;
+      } else {
+        peer.picture = userinfo.picture;
+      }
+    }
+    if (userinfo["urn:oid:0.9.2342.19200300.100.1.60"] != null) {
+      peer.picture = `data:image/jpeg;base64, ${userinfo["urn:oid:0.9.2342.19200300.100.1.60"]}`;
+    }
 
-		if (userinfo.nickname != null)
-		{
-			peer.displayName = userinfo.nickname;
-		}
+    if (userinfo.nickname != null) {
+      peer.displayName = userinfo.nickname;
+    }
 
-		if (userinfo.name != null)
-		{
-			peer.displayName = userinfo.name;
-		}
+    if (userinfo.name != null) {
+      peer.displayName = userinfo.name;
+    }
 
-		if (userinfo.displayName != null)
-		{
-			peer.displayName = userinfo.displayName;
-		}
+    if (userinfo.displayName != null) {
+      peer.displayName = userinfo.displayName;
+    }
 
-		if (userinfo['urn:oid:2.16.840.1.113730.3.1.241'] != null)
-		{
-			peer.displayName = userinfo['urn:oid:2.16.840.1.113730.3.1.241'];
-		}
+    if (userinfo["urn:oid:2.16.840.1.113730.3.1.241"] != null) {
+      peer.displayName = userinfo["urn:oid:2.16.840.1.113730.3.1.241"];
+    }
 
-		if (userinfo.email != null)
-		{
-			peer.email = userinfo.email;
-		}
-	},
-	// All users have the role "NORMAL" by default. Other roles need to be
-	// added in the "userMapping" function. The following accesses and
-	// permissions are arrays of roles. Roles can be changed in userRoles.js
-	//
-	// Example:
-	// [ userRoles.MODERATOR, userRoles.AUTHENTICATED ]
-	accessFromRoles : {
-		// The role(s) will gain access to the room
-		// even if it is locked (!)
-		[BYPASS_ROOM_LOCK] : [ userRoles.ADMIN ],
-		// The role(s) will gain access to the room without
-		// going into the lobby. If you want to restrict access to your
-		// server to only directly allow authenticated users, you could
-		// add the userRoles.AUTHENTICATED to the user in the userMapping
-		// function, and change to BYPASS_LOBBY : [ userRoles.AUTHENTICATED ]
-		[BYPASS_LOBBY]     : [ userRoles.NORMAL ]
-	},
-	permissionsFromRoles : {
-		// The role(s) have permission to lock/unlock a room
-		[CHANGE_ROOM_LOCK]  : [ userRoles.MODERATOR ],
-		// The role(s) have permission to promote a peer from the lobby
-		[PROMOTE_PEER]      : [ userRoles.NORMAL ],
-		// The role(s) have permission to give/remove other peers roles
-		[MODIFY_ROLE]       : [ userRoles.NORMAL ],
-		// The role(s) have permission to send chat messages
-		[SEND_CHAT]         : [ userRoles.NORMAL ],
-		// The role(s) have permission to moderate chat
-		[MODERATE_CHAT]     : [ userRoles.MODERATOR ],
-		// The role(s) have permission to share audio
-		[SHARE_AUDIO]       : [ userRoles.NORMAL ],
-		// The role(s) have permission to share video
-		[SHARE_VIDEO]       : [ userRoles.NORMAL ],
-		// The role(s) have permission to share screen
-		[SHARE_SCREEN]      : [ userRoles.NORMAL ],
-		// The role(s) have permission to produce extra video
-		[EXTRA_VIDEO]       : [ userRoles.NORMAL ],
-		// The role(s) have permission to share files
-		[SHARE_FILE]        : [ userRoles.NORMAL ],
-		// The role(s) have permission to moderate files
-		[MODERATE_FILES]    : [ userRoles.MODERATOR ],
-		// The role(s) have permission to moderate room (e.g. kick user)
-		[MODERATE_ROOM]     : [ userRoles.MODERATOR ],
-		// The role(s) have permission to local record room
-		[LOCAL_RECORD_ROOM] : [ userRoles.NORMAL ]
-	},
-	// Array of permissions. If no peer with the permission in question
-	// is in the room, all peers are permitted to do the action. The peers
-	// that are allowed because of this rule will not be able to do this 
-	// action as soon as a peer with the permission joins. In this example
-	// everyone will be able to lock/unlock room until a MODERATOR joins.
-	allowWhenRoleMissing : [ CHANGE_ROOM_LOCK ]
+    if (userinfo.email != null) {
+      peer.email = userinfo.email;
+    }
+  },
+  // All users have the role "NORMAL" by default. Other roles need to be
+  // added in the "userMapping" function. The following accesses and
+  // permissions are arrays of roles. Roles can be changed in userRoles.js
+  //
+  // Example:
+  // [ userRoles.Host, userRoles.AUTHENTICATED ]
+  accessFromRoles: {
+    // The role(s) will gain access to the room
+    // even if it is locked (!)
+    [BYPASS_ROOM_LOCK]: [userRoles.ADMIN],
+    // The role(s) will gain access to the room without
+    // going into the lobby. If you want to restrict access to your
+    // server to only directly allow authenticated users, you could
+    // add the userRoles.AUTHENTICATED to the user in the userMapping
+    // function, and change to BYPASS_LOBBY : [ userRoles.AUTHENTICATED ]
+    [BYPASS_LOBBY]: [userRoles.NORMAL],
+  },
+  permissionsFromRoles: {
+    // The role(s) have permission to lock/unlock a room
+    [CHANGE_ROOM_LOCK]: [userRoles.Host],
+    // The role(s) have permission to promote a peer from the lobby
+    [PROMOTE_PEER]: [userRoles.NORMAL],
+    // The role(s) have permission to give/remove other peers roles
+    [MODIFY_ROLE]: [userRoles.NORMAL],
+    // The role(s) have permission to send chat messages
+    [SEND_CHAT]: [userRoles.NORMAL],
+    // The role(s) have permission to moderate chat
+    [MODERATE_CHAT]: [userRoles.Host],
+    // The role(s) have permission to share audio
+    [SHARE_AUDIO]: [userRoles.NORMAL],
+    // The role(s) have permission to share video
+    [SHARE_VIDEO]: [userRoles.NORMAL],
+    // The role(s) have permission to share screen
+    [SHARE_SCREEN]: [userRoles.NORMAL],
+    // The role(s) have permission to produce extra video
+    [EXTRA_VIDEO]: [userRoles.NORMAL],
+    // The role(s) have permission to share files
+    [SHARE_FILE]: [userRoles.NORMAL],
+    // The role(s) have permission to moderate files
+    [MODERATE_FILES]: [userRoles.Host],
+    // The role(s) have permission to moderate room (e.g. kick user)
+    [MODERATE_ROOM]: [userRoles.Host],
+    // The role(s) have permission to local record room
+    [LOCAL_RECORD_ROOM]: [userRoles.NORMAL],
+  },
+  // Array of permissions. If no peer with the permission in question
+  // is in the room, all peers are permitted to do the action. The peers
+  // that are allowed because of this rule will not be able to do this
+  // action as soon as a peer with the permission joins. In this example
+  // everyone will be able to lock/unlock room until a Host joins.
+  allowWhenRoleMissing: [CHANGE_ROOM_LOCK],
 };

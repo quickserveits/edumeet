@@ -3,9 +3,10 @@ node_modules/
 /app/build/
 /app/public/config/config.js
 /app/public/images/logo.*
-!/app/public/images/logo.edumeet.svg
+!/app/public/images/logo.png
 /server/config/
-!/server/config/config.example.js
+!/server/config/config.example.*
+!/server/config/README.md
 /server/public/
 /server/certs/
 /server/dist/

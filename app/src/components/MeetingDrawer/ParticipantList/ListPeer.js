@@ -80,7 +80,7 @@ const styles = (theme) =>
 			marginRight : theme.spacing(2),
 			marginTop   : theme.spacing(1)
 		},
-		moderator :
+		Host :
 		{
 			color : 'rgba(220, 0, 78, 1)'
 		}
@@ -138,7 +138,7 @@ const ListPeer = (props) =>
 
 	const {
 		roomClient,
-		isModerator,
+		isHost,
 		spotlight,
 		peer,
 		mode,
@@ -184,7 +184,7 @@ const ListPeer = (props) =>
 				<IconButton
 					className={classes.buttons}
 					style={{ color: green[500] }}
-					disabled={!isModerator || peer.raisedHandInProgress}
+					disabled={!isHost || peer.raisedHandInProgress}
 					onClick={() =>
 					{
 						roomClient.lowerPeerHand(peer.id);
@@ -404,17 +404,17 @@ const ListPeer = (props) =>
 								}
 							</p>
 						</MenuItem>
-						{ isModerator &&
+						{ isHost &&
 							<React.Fragment>
 								<Divider />
 								<Typography
 									className={
-										classnames(classes.moreActionsHeader, classes.moderator)
+										classnames(classes.moreActionsHeader, classes.Host)
 									}
 								>
 									<FormattedMessage
-										id='room.moderatoractions'
-										defaultMessage='Moderator actions'
+										id='room.Hostactions'
+										defaultMessage='Host actions'
 									/>
 								</Typography>
 								<MenuItem
@@ -450,7 +450,7 @@ const ListPeer = (props) =>
 									}
 									<p className={classes.moreAction}>
 										<FormattedMessage
-											id='tooltip.muteParticipantAudioModerator'
+											id='tooltip.muteParticipantAudioHost'
 											defaultMessage='Stop audio'
 										/>
 									</p>
@@ -471,7 +471,7 @@ const ListPeer = (props) =>
 									}
 									<p className={classes.moreAction}>
 										<FormattedMessage
-											id='tooltip.muteParticipantVideoModerator'
+											id='tooltip.muteParticipantVideoHost'
 											defaultMessage='Stop video'
 										/>
 									</p>
@@ -492,7 +492,7 @@ const ListPeer = (props) =>
 									}
 									<p className={classes.moreAction}>
 										<FormattedMessage
-											id='tooltip.muteScreenSharingModerator'
+											id='tooltip.muteScreenSharingHost'
 											defaultMessage='Stop screen share'
 										/>
 									</p>
@@ -508,7 +508,7 @@ const ListPeer = (props) =>
 									<AccountTreeIcon />
 									<p className={classes.moreAction}>
 										<FormattedMessage
-											id='moderator.modifyPeerRoles'
+											id='Host.modifyPeerRoles'
 											defaultMessage='Change roles'
 										/>
 									</p>
@@ -526,7 +526,7 @@ ListPeer.propTypes =
 {
 	roomClient       : PropTypes.any.isRequired,
 	advancedMode     : PropTypes.bool,
-	isModerator      : PropTypes.bool,
+	isHost           : PropTypes.bool,
 	spotlight        : PropTypes.bool,
 	peer             : appPropTypes.Peer.isRequired,
 	mode             : PropTypes.string.isRequired,

@@ -53,7 +53,7 @@ const styles = (theme) =>
 			marginBottom : theme.spacing(3)
 		}
 	});
-const eduMeetUrl='https://edumeet.org';
+const EjtimaaUrl='https://Ejtimaa.org';
 const About = ({
 	aboutOpen,
 	handleCloseAbout,
@@ -93,8 +93,8 @@ const About = ({
 					126-130 Hills Road, Cambridge CB2 1PQ, UK.
 				</DialogContentText>
 				<DialogContentText align='center' paragraph>
-					<Link href={eduMeetUrl} target='_blank' rel='noreferrer' color='secondary' variant='h6'>
-						{eduMeetUrl}
+					<Link href={EjtimaaUrl} target='_blank' rel='noreferrer' color='secondary' variant='h6'>
+						{EjtimaaUrl}
 					</Link>
 				</DialogContentText>
 				<DialogContentText align='center' variant='body2'>

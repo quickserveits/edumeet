@@ -1,12 +1,11 @@
-import { configDocs } from '../lib/config/config';
-import { writeFile } from 'fs/promises';
+import { configDocs } from "../lib/config/config";
+import { writeFile } from "fs/promises";
 
-function formatJson(data)
-{
-	return `\`${data.replace(/\n/g, '')}\``;
+function formatJson(data) {
+  return `\`${data.replace(/\n/g, "")}\``;
 }
 
-let data = `# Edumeet Server Configuration
+let data = `# Ejtimaa Server Configuration
 
 The server configuration file can use one of the following formats:
 
@@ -36,11 +35,12 @@ Look at the default \`config/config.example.js\` file for documentation.
 | :--- | :---------- | :----- | :------------ |
 `;
 
-Object.entries(configDocs).forEach((entry: [string, any]) =>
-{
-	const [ name, value ] = entry;
+Object.entries(configDocs).forEach((entry: [string, any]) => {
+  const [name, value] = entry;
 
-	data += `| ${name} | ${value.doc} | ${formatJson(value.format)} | \`${formatJson(value.default)}\` |\n`;
+  data += `| ${name} | ${value.doc} | ${formatJson(
+    value.format
+  )} | \`${formatJson(value.default)}\` |\n`;
 });
 
 data += `
@@ -50,10 +50,11 @@ data += `
 *Document generated with:* \`yarn gen-config-docs\`
 `;
 
-writeFile('README.md', data).then(() =>
-{
-	console.log('done'); // eslint-disable-line
-}, (err) =>
-{
-	console.error(`Error writing file: ${err.message}`); // eslint-disable-line
-});
+writeFile("README.md", data).then(
+  () => {
+    console.log("done"); // eslint-disable-line
+  },
+  (err) => {
+    console.error(`Error writing file: ${err.message}`); // eslint-disable-line
+  }
+);

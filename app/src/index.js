@@ -109,6 +109,8 @@ function run()
 	// Get current device.
 	const device = deviceInfo();
 
+	console.log('device', device);
+
 	let unsupportedBrowser = false;
 
 	let webrtcUnavailable = false;
@@ -116,6 +118,12 @@ function run()
 	if (detectDevice() === undefined)
 	{
 		logger.error('Your browser is not supported [deviceInfo:"%o"]', device);
+
+		unsupportedBrowser = true;
+	}
+	else if (device?.name === 'firefox')
+	{
+		logger.error('Your browser is not supported audio please join different browser [deviceInfo:"%o"]', device);
 
 		unsupportedBrowser = true;
 	}
@@ -160,7 +168,7 @@ function run()
 					</IntlProvider>
 				</MuiThemeProvider>
 			</Provider>,
-			document.getElementById('edumeet')
+			document.getElementById('Ejtimaa')
 		);
 
 		return;
@@ -176,7 +184,7 @@ function run()
 					</IntlProvider>
 				</MuiThemeProvider>
 			</Provider>,
-			document.getElementById('edumeet')
+			document.getElementById('Ejtimaa')
 		);
 
 		return;
@@ -192,7 +200,7 @@ function run()
 					</IntlProvider>
 				</MuiThemeProvider>
 			</Provider>,
-			document.getElementById('edumeet')
+			document.getElementById('Ejtimaa')
 		);
 
 		return;
@@ -244,7 +252,7 @@ function run()
 				</IntlProvider>
 			</MuiThemeProvider>
 		</Provider>,
-		document.getElementById('edumeet')
+		document.getElementById('Ejtimaa')
 	);
 }
 

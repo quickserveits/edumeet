@@ -35,6 +35,17 @@ const toolarea = (state = initialState, action) =>
 			return { ...state, toolAreaOpen };
 		}
 
+		case 'TOGGLE_SWITCH_THEME':
+		{
+			let switchTheme = 'light';
+
+			if (state.switchTheme === 'light')
+			{
+				switchTheme='dark'
+			}
+			return { ...state, switchTheme };
+		}
+
 		case 'SET_TOOL_TAB':
 		{
 			const { toolTab } = action.payload;

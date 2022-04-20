@@ -49,11 +49,14 @@ import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
 import PauseCircleOutlineIcon from '@material-ui/icons/PauseCircleOutline';
 import PauseCircleFilledIcon from '@material-ui/icons/PauseCircleFilled';
 import StopIcon from '@material-ui/icons/Stop';
+import SettingsInputSvideoIcon from '@material-ui/icons/SettingsInputSvideo';
 import randomString from 'random-string';
 import { recorder } from './../../BrowserRecorder';
-
+import DeveloperBoardIcon from '@material-ui/icons/DeveloperBoard';
 import Logger from '../../Logger';
 import { config } from '../../config';
+import moment from 'moment';
+import { Switch } from '@material-ui/core';
 
 const logger = new Logger('Recorder');
 
@@ -214,8 +217,11 @@ const TopBar = (props) =>
 	const [ mobileMoreAnchorEl, setMobileMoreAnchorEl ] = useState(null);
 	const [ anchorEl, setAnchorEl ] = useState(null);
 	const [ currentMenu, setCurrentMenu ] = useState(null);
-	const [ recordingNotificationsId,
-		setRecordingNotificationsId ] = useState(null);
+	const [ counter, setCounter ] = useState(0);
+	const [ hours, setHours ] =	useState(0);
+	const [ meanuts, setMeanuts ] = useState(0);
+	const [ darkState, setDarkState ] = useState(false);
+	const [ recordingNotificationsId, setRecordingNotificationsId ] = useState(null);
 
 	const handleExited = () =>
 	{
@@ -245,6 +251,12 @@ const TopBar = (props) =>
 		handleMobileMenuClose();
 	};
 
+	const handleThemeChange = () =>
+	{
+		setDarkState(!darkState);
+		toggleSwitchTheme();
+	};
+
 	const {
 		roomClient,
 		room,
@@ -269,6 +281,7 @@ const TopBar = (props) =>
 		setLockDialogOpen,
 		setHideSelfView,
 		toggleToolArea,
+		toggleSwitchTheme,
 		openUsersTab,
 		addNotification,
 		closeNotification,
@@ -292,6 +305,25 @@ const TopBar = (props) =>
 	// did it change?
 	recorder.checkMicProducer(producers);
 	recorder.checkAudioConsumer(consumers, recordingConsents);
+
+	useEffect(() =>
+	{
+		if (counter > 59)
+		{
+			setCounter(0);
+			setMeanuts(meanuts + 1);
+		}
+		else if (meanuts > 59 && meanuts>9)
+		{
+			setHours(hours + 1);
+			setMeanuts(0);
+			setCounter(0);
+		}
+		else
+		{
+			setTimeout(() => setCounter(counter + 1), 1000);
+		}
+	}, [ counter, meanuts, hours ]);
 
 	useEffect(() =>
 	{
@@ -382,7 +414,7 @@ const TopBar = (props) =>
 		:
 		intl.formatMessage({
 			id             : 'tooltip.pauseLocalRecording',
-			defaultMessage : 'Pause local recording.'
+			defaultMessage : 'Pause local recording'
 		});
 
 	const fullscreenTooltip = fullscreen ?
@@ -436,7 +468,7 @@ const TopBar = (props) =>
 						</IconButton>
 					</PulsingBadge>
 					{ config.logo !=='' ?
-						<img alt='Logo'
+						<img alt='Logo' style={{ width: 150 }}
 							src={config.logo}
 							className={classes.logo}
 						/> :
@@ -448,6 +480,7 @@ const TopBar = (props) =>
 						</Typography>
 					}
 					<div className={classes.grow} />
+					<p>{hours<9?`0${hours}`:hours}:{meanuts<9?`0${meanuts}`:meanuts}:{counter<9?`0${counter}`:counter}</p>
 					<div className={classes.sectionDesktop}>
 						{ recordingInProgress &&
 						<IconButton
@@ -594,7 +627,19 @@ const TopBar = (props) =>
 											color='secondary'
 											badgeContent={lobbyPeers.length}
 										>
-											<SecurityIcon />
+											{ config.admit !=='' ?
+												<img alt='admit' style={{ width: 35 }}
+													src={config.admit}
+													className={classes.admit}
+												/> :
+												<Typography
+													variant='h6'
+													noWrap color='inherit'
+												>
+													{config.title}
+												</Typography>
+											}
+											{/* <SettingsInputSvideoIcon /> */}
 										</PulsingBadge>
 									</IconButton>
 								</span>
@@ -642,7 +687,19 @@ const TopBar = (props) =>
 										color='secondary'
 										badgeContent={lobbyPeers.length}
 									>
-										<SecurityIcon />
+										{ config.admit !=='' ?
+											<img alt='admit' style={{ width: 35 }}
+												src={config.admit}
+												className={classes.admit}
+											/> :
+											<Typography
+												variant='h6'
+												noWrap color='inherit'
+											>
+												{config.title}
+											</Typography>
+										}
+										{/* <SettingsInputSvideoIcon /> */}
 									</PulsingBadge>
 								</IconButton>
 							</span>
@@ -658,7 +715,7 @@ const TopBar = (props) =>
 					</div>
 					<div className={classes.divider} />
 
-					<Button
+					{/* <Button
 						aria-label={locale.split(/[-_]/)[0]}
 						className={classes.actionButton}
 						color='secondary'
@@ -666,8 +723,7 @@ const TopBar = (props) =>
 						onClick={(event) => handleMenuOpen(event, 'localeMenu')}
 					>
 						{locale.split(/[-_]/)[0]}
-					</Button>
-
+					</Button> */}
 					<Button
 						aria-label={intl.formatMessage({
 							id             : 'label.leave',
@@ -902,7 +958,7 @@ const TopBar = (props) =>
 								/>
 							</p>
 						</MenuItem>
-						<MenuItem
+						{/* <MenuItem
 							onClick={() =>
 							{
 								handleMenuClose();
@@ -921,7 +977,7 @@ const TopBar = (props) =>
 									defaultMessage='About'
 								/>
 							</p>
-						</MenuItem>
+						</MenuItem> */}
 					</Paper>
 				}
 
@@ -1092,6 +1148,20 @@ const TopBar = (props) =>
 				</MenuItem>
 				<MenuItem
 					aria-label={intl.formatMessage({
+						id             : 'tooltip.theme',
+						defaultMessage : 'Show theme'
+					})}
+				>
+					<Switch checked={darkState} onChange={handleThemeChange} />
+					<p className={classes.moreAction}>
+						<FormattedMessage
+							id='tooltip.theme'
+							defaultMessage='Show Theme'
+						/>
+					</p>
+				</MenuItem>
+				<MenuItem
+					aria-label={intl.formatMessage({
 						id             : 'tooltip.participants',
 						defaultMessage : 'Show participants'
 					})}
@@ -1218,7 +1288,7 @@ const TopBar = (props) =>
 						/>
 					</p>
 				</MenuItem>
-				<MenuItem
+				{/* <MenuItem
 					onClick={() =>
 					{
 						handleMenuClose();
@@ -1237,7 +1307,7 @@ const TopBar = (props) =>
 							defaultMessage='About'
 						/>
 					</p>
-				</MenuItem>
+				</MenuItem> */}
 			</Menu>
 		</React.Fragment>
 	);
@@ -1269,6 +1339,7 @@ TopBar.propTypes =
 	setLockDialogOpen    : PropTypes.func.isRequired,
 	setHideSelfView      : PropTypes.func.isRequired,
 	toggleToolArea       : PropTypes.func.isRequired,
+	toggleSwitchTheme    : PropTypes.func.isRequired,
 	openUsersTab         : PropTypes.func.isRequired,
 	addNotification      : PropTypes.func.isRequired,
 	closeNotification    : PropTypes.func.isRequired,
@@ -1374,6 +1445,10 @@ const mapDispatchToProps = (dispatch) =>
 		toggleToolArea : () =>
 		{
 			dispatch(toolareaActions.toggleToolArea());
+		},
+		toggleSwitchTheme : () =>
+		{
+			dispatch(toolareaActions.toggleSwitchTheme());
 		},
 		openUsersTab : () =>
 		{

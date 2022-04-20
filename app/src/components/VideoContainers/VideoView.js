@@ -155,7 +155,7 @@ const styles = (theme) =>
 			fontWeight      : 400,
 			color           : 'rgba(255, 255, 255, 0.85)',
 			border          : 'none',
-			borderBottom    : '1px solid #aeff00',
+			borderBottom    : '1px solid #e6993f',
 			backgroundColor : 'rgba(0, 0, 0, 0.25)',
 			padding         : theme.spacing(0.6)
 		},
@@ -664,7 +664,7 @@ VideoView.propTypes =
 	opusConfig                     : PropTypes.string,
 	localRecordingState            : PropTypes.string,
 	recordingConsents              : PropTypes.array,
-	peer                           : PropTypes.string
+	peer                           : PropTypes.object
 
 };
 

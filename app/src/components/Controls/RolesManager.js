@@ -87,7 +87,7 @@ const RolesManager = ({
 					<DialogContent>
 						<DialogContentText gutterBottom>
 							<FormattedMessage
-								id='moderator.modifyPeerRoles'
+								id='Host.modifyPeerRoles'
 								defaultMessage='Change roles'
 							/>
 						</DialogContentText>

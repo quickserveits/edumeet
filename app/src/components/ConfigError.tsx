@@ -43,7 +43,7 @@ const ConfigError = ({
 			<DialogContent dividers>
 				<FormattedMessage
 					id='configError.bodyText'
-					defaultMessage='The Edumeet configuration contains errors:'
+					defaultMessage='The Ejtimaa configuration contains errors:'
 				/>
 				<Grid container spacing={2} alignItems='center'>
 					<Grid item>

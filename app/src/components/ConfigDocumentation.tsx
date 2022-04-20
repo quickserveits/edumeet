@@ -46,7 +46,7 @@ const ConfigDocumentation = ({
 				<Typography className={classes.title} variant='h5' component='h2'>
 					<FormattedMessage
 						id='configDocumentation.title'
-						defaultMessage='Edumeet configuration'
+						defaultMessage='Ejtimaa configuration'
 					/>
 				</Typography>
 				<Typography variant='body2' component='div'>

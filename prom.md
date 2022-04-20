@@ -13,15 +13,15 @@ for closed connections but that `prom-client`
 custom collectors.
 
 This version has been ported from an earlier Python version that was not part
-of `edumeet` but connected as an interactive client.
+of `Ejtimaa` but connected as an interactive client.
 
 ## Configuration
 
 See `prometheus` in `server/config/config.example.js` for options and
 applicable defaults.
 
-If `edumeet` was installed with 
-[`mm-absible`](https://github.com/edumeet/edumeet-ansible)
+If `Ejtimaa` was installed with 
+[`mm-absible`](https://github.com/Ejtimaa/Ejtimaa-ansible)
 it may be necessary to open the `iptables` firewall for incoming TCP traffic
 on the allocated port (see `/etc/ferm/ferm.conf`).
 
@@ -29,8 +29,8 @@ on the allocated port (see `/etc/ferm/ferm.conf`).
 
 | metric | value |
 |--------|-------|
-| `edumeet_peers`| |
-| `edumeet_rooms`| |
+| `Ejtimaa_peers`| |
+| `Ejtimaa_rooms`| |
 | `mediasoup_consumer_byte_count_bytes`| [`byteCount`](https://mediasoup.org/documentation/v3/mediasoup/rtc-statistics/#Consumer-Statistics) |
 | `mediasoup_consumer_score`| [`score`](https://mediasoup.org/documentation/v3/mediasoup/rtc-statistics/#Consumer-Statistics) |
 | `mediasoup_producer_byte_count_bytes`| [`byteCount`](https://mediasoup.org/documentation/v3/mediasoup/rtc-statistics/#Producer-Statistics) |

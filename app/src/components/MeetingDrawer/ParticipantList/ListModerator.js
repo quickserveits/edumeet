@@ -24,7 +24,7 @@ const styles = (theme) =>
 		}
 	});
 
-const ListModerator = (props) =>
+const ListHost = (props) =>
 {
 	const intl = useIntl();
 
@@ -104,7 +104,7 @@ const ListModerator = (props) =>
 	);
 };
 
-ListModerator.propTypes =
+ListHost.propTypes =
 {
 	roomClient : PropTypes.any.isRequired,
 	room       : PropTypes.object.isRequired,
@@ -127,4 +127,4 @@ export default withRoomContext(connect(
 			);
 		}
 	}
-)(withStyles(styles)(ListModerator)));
+)(withStyles(styles)(ListHost)));

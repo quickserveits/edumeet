@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
-import Moderator from './Menu/Moderator';
+import Host from './Menu/Moderator';
 import List from './List/List';
 import Input from './Menu/Input';
 
@@ -26,7 +26,7 @@ const Chat = (props) =>
 
 	return (
 		<Paper className={classes.root}>
-			<Moderator />
+			<Host />
 			<List />
 			<Input />
 		</Paper>

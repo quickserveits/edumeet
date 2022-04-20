@@ -16,7 +16,7 @@ convict.addFormat({
 });
 
 /**
- * The Edumeet configuration schema.
+ * The Ejtimaa configuration schema.
  *
  * Use `yarn gen-config-docs` to re-generate the README.md and the
  * public/config/config.example.js files.
@@ -38,7 +38,7 @@ const configSchema = convict({
 	{
 		doc     : 'The production server listening port.',
 		format  : 'port',
-		default : 8443
+		default : 443
 	},
 	serverHostname :
 	{
@@ -206,7 +206,7 @@ This value must match exactly one of the values defined in aspectRatios.`,
 	{
 		doc     : 'If set to true Local Recording feature will be enabled.',
 		format  : 'Boolean',
-		default : false
+		default : true
 	},
 
 	/**
@@ -220,7 +220,8 @@ This value must match exactly one of the values defined in aspectRatios.`,
 		format  : Array,
 		default : [
 			'chrome',
-			'opera'
+			'opera',
+			'firefox'
 		]
 	},
 	requestTimeout :
@@ -476,7 +477,7 @@ Setting 'play' to null disables the sound notification.
 	{
 		doc     : 'The highest number of lastN the user can select manually in the user interface.',
 		format  : 'nat',
-		default : 5
+		default : 1000
 	},
 	lockLastN :
 	{
@@ -489,14 +490,21 @@ Setting 'play' to null disables the sound notification.
 	{
 		doc      : 'If not null, it shows the logo loaded from the specified URL, otherwise it shows the title.',
 		format   : 'url',
-		default  : 'images/logo.edumeet.svg',
+		default  : 'images/logo.png',
+		nullable : true
+	},
+	admit :
+	{
+		doc      : 'If not null, it shows the admit loaded from the specified URL, otherwise it shows the title.',
+		format   : 'url',
+		default  : 'images/admit.png',
 		nullable : true
 	},
 	title :
 	{
 		doc     : 'The title to show if the logo is not specified.',
 		format  : 'String',
-		default : 'edumeet'
+		default : 'Ejtimaa'
 	},
 	supportUrl :
 	{
@@ -540,18 +548,18 @@ Setting 'play' to null disables the sound notification.
 				{
 					containedPrimary :
 					{
-						backgroundColor : '#5F9B2D',
+						backgroundColor : 'rgba(0, 0, 0, 0.87)',
 						'&:hover'       :
 						{
-							backgroundColor : '#5F9B2D'
+							backgroundColor : 'rgba(0, 0, 0, 0.87)'
 						}
 					},
 					containedSecondary :
 					{
-						backgroundColor : '#f50057',
+						backgroundColor : 'red',
 						'&:hover'       :
 						{
-							backgroundColor : '#f50057'
+							backgroundColor : 'red'
 						}
 					}
 
@@ -562,18 +570,18 @@ Setting 'play' to null disables the sound notification.
 				{
 					colorPrimary :
 					{
-						backgroundColor : '#5F9B2D',
+						backgroundColor : 'rgba(0, 0, 0, 0.87)',
 						'&:hover'	   :
 						{
-							backgroundColor : '#5F9B2D'
+							backgroundColor : 'rgba(0, 0, 0, 0.87)'
 						}
 					},
 					colorSecondary :
 					{
-						backgroundColor : '#f50057',
+						backgroundColor : 'red',
 						'&:hover'	   :
 						{
-							backgroundColor : '#f50057'
+							backgroundColor : 'red'
 						}
 					}
 
@@ -584,10 +592,10 @@ Setting 'play' to null disables the sound notification.
 				{
 					primary :
 					{
-						backgroundColor : '#518029',
+						backgroundColor : '#e89b3f',
 						'&:hover'       :
 						{
-							backgroundColor : '#518029'
+							backgroundColor : '#e89b3f'
 						},
 						'&:disabled' : {
 							color           : '#999898',
@@ -598,10 +606,10 @@ Setting 'play' to null disables the sound notification.
 
 					secondary :
 					{
-						backgroundColor : '#f50057',
+						backgroundColor : 'red',
 						'&:hover'       :
 						{
-							backgroundColor : '#f50057'
+							backgroundColor : 'red'
 						},
 						'&:disabled' : {
 							color           : '#999898',
@@ -616,10 +624,10 @@ Setting 'play' to null disables the sound notification.
 				{
 					colorPrimary :
 					{
-						backgroundColor : '#5F9B2D',
+						backgroundColor : 'rgba(0, 0, 0, 0.87)',
 						'&:hover'       :
 						{
-							backgroundColor : '#518029'
+							backgroundColor : '#e89b3f'
 						}
 					}
 				}
@@ -668,24 +676,7 @@ function formatJson(data: string)
 
 function dumpDocsMarkdown()
 {
-	let data = `# Edumeet App Configuration
-
-The app configuration file should be a valid javascript file defining a single
-\`config\` object containing the properties that you need to modify.
-
-Example \`public/config.js\`:
-\`\`\`javascript
-var config =
-{
-	developmentPort : 8443,
-	productionPort  : 3443
-};
-\`\`\`
-
-An example configuration file with all properties set to default values
-can be found here: [config.example.js](public/config/config.example.js).
-
-## Configuration properties
+	let data = `# ![Ejtimaa logo](/app/public/images/logo.png) App Configuration properties list:
 
 | Name | Description | Format | Default value |
 | :--- | :---------- | :----- | :------------ |
@@ -711,7 +702,7 @@ can be found here: [config.example.js](public/config/config.example.js).
 function dumpExampleConfigJs()
 {
 	let data = `/**
- * Edumeet App Configuration
+ * Ejtimaa App Configuration
  *
  * The configuration documentation is available also:
  * - in the app/README.md file in the source tree
@@ -748,7 +739,7 @@ if (typeof window === 'undefined')
 {
 	import('fs').then((fs) =>
 	{
-		fs.writeFileSync('README.md', dumpDocsMarkdown());
+		fs.writeFileSync('public/config/README.md', dumpDocsMarkdown());
 		fs.writeFileSync('public/config/config.example.js', dumpExampleConfigJs());
 	});
 }

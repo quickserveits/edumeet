@@ -1,8 +1,8 @@
 {
-	"name": "edumeet",
-	"version": "3.4.0",
+	"name": "Ejtimaa",
+	"version": "3.5.1",
 	"private": true,
-	"description": "edumeet meeting service",
+	"description": "Ejtimaa meeting service",
 	"author": "Håvar Aambø Fosstveit <h@fosstveit.net>",
 	"contributors": [
 		"Stefan Otto",
@@ -38,18 +38,21 @@
 		"draft-js-single-line-plugin": "^2.0.5",
 		"end-of-stream": "1.4.1",
 		"file-saver": "^2.0.2",
+		"firebase": "^9.6.10",
 		"hark": "^1.2.3",
 		"idb": "^6.0.0",
 		"is-electron": "^2.2.0",
 		"marked": "^0.8.0",
 		"material-ui-popup-state": "^1.8.0",
 		"mediasoup-client": "^3.6.47",
+		"moment": "^2.29.1",
 		"notistack": "^0.9.5",
 		"prop-types": "^15.7.2",
 		"random-string": "^0.2.0",
 		"react": "^16.10.2",
 		"react-cookie-consent": "^2.5.0",
 		"react-dom": "^16.10.2",
+		"react-file-viewer": "^1.2.1",
 		"react-flip-toolkit": "^7.0.9",
 		"react-image-file-resizer": "^0.3.8",
 		"react-images-upload": "^1.2.0",
@@ -110,6 +113,6 @@
 		"eslint-webpack-plugin": "^2.5.3",
 		"foreman": "^3.0.1",
 		"redux-mock-store": "^1.5.3",
-		"ts-node": "^9.1.1"
+		"ts-node": "^10.5.0"
 	}
 }

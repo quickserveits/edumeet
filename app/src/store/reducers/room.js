@@ -30,6 +30,7 @@ const initialState =
 	helpOpen                      : false,
 	aboutOpen                     : false,
 	leaveOpen                     : false,
+	messageOpen                   : false,
 	currentSettingsTab            : 'media', // media, appearance, advanced
 	lockDialogOpen                : false,
 	joined                        : false,
@@ -50,6 +51,15 @@ const room = (state = initialState, action) =>
 	{
 		case 'SET_ROOM_NAME':
 		{
+			const { name } = action.payload;
+
+			return { ...state, name };
+		}
+
+		case 'SET_MESSAGE_OPEN':
+		{
+			console.log(action);
+
 			const { name } = action.payload;
 
 			return { ...state, name };

@@ -25,6 +25,9 @@ import FormatBoldIcon from '@material-ui/icons/FormatBold';
 import FormatItalicIcon from '@material-ui/icons/FormatItalic';
 import FormatUnderlinedIcon from '@material-ui/icons/FormatUnderlined';
 import SortIcon from '@material-ui/icons/Sort';
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+// import Compressor from 'compressorjs';
+import { app } from '../../../../firebase/firebase';
 
 const styles = (theme) => ({
 	root :
@@ -114,21 +117,51 @@ const ChatInput = (props) =>
 		}
 	};
 
+	const uploadShareFile = async (filess, url) =>
+	{
+		await props.roomClient.shareFiles({
+			type       : 'file',
+			time       : Date.now(),
+			sender     : 'response',
+			isRead     : null,
+			name       : displayName,
+			peerId     : peerId,
+			picture    : picture,
+			attachment : filess,
+			url        : url
+		});
+	};
+
 	const attachFile = async (e) =>
 	{
-		if (e.target.files.length > 0)
+		const filess = e.target.files;
+
+		if (filess.length > 0)
 		{
-			await props.roomClient.shareFiles({
-				type       : 'file',
-				time       : Date.now(),
-				sender     : 'response',
-				isRead     : null,
-				name       : displayName,
-				peerId     : peerId,
-				picture    : picture,
-				attachment : e.target.files
-			});
-		}
+			const storage = getStorage(app);
+
+			const storageRef = ref(storage, filess[0].name);
+
+			const uploadTask = uploadBytesResumable(storageRef, filess[0]);
+
+			uploadTask.on(
+				'state_changed',
+				(snapshot) => {},
+				(error) =>
+				{
+					console.log(error);
+				},
+				() =>
+				{
+					getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) =>
+					{
+						console.log('File available at', downloadURL);
+
+						uploadShareFile(filess, downloadURL);
+					});
+				}
+					);
+			}
 	};
 
 	useEffect(() =>
@@ -418,7 +451,7 @@ const ChatInput = (props) =>
 									disabled={!canShareFiles || !canShare || chatItemsLength === 0}
 									aria-label={intl.formatMessage({
 										id             : 'label.saveChat',
-										defaultMessage : 'Save chat'
+										defaultMessage : 'Save Chat'
 									})}
 
 									component='span'
