@@ -38,9 +38,24 @@ Look at the default \`config/config.example.js\` file for documentation.
 Object.entries(configDocs).forEach((entry: [string, any]) => {
   const [name, value] = entry;
 
+<<<<<<< HEAD
   data += `| ${name} | ${value.doc} | ${formatJson(
     value.format
   )} | \`${formatJson(value.default)}\` |\n`;
+=======
+	// escape dynamically created default values
+	switch (name)
+	{
+		case 'mediasoup.webRtcTransport.listenIps':
+			value.default = '[ { "ip": "0.0.0.0", "announcedIp": null } ]';
+			break;
+		case 'mediasoup.numWorkers':
+			value.default = '4';
+			break;
+	}
+
+	data += `| ${name} | ${value.doc} | ${formatJson(value.format)} | \`${formatJson(value.default)}\` |\n`;
+>>>>>>> 61db9e3739921df6b2cf6edca4cefbaf55eb3796
 });
 
 data += `
@@ -50,6 +65,7 @@ data += `
 *Document generated with:* \`yarn gen-config-docs\`
 `;
 
+<<<<<<< HEAD
 writeFile("README.md", data).then(
   () => {
     console.log("done"); // eslint-disable-line
@@ -58,3 +74,12 @@ writeFile("README.md", data).then(
     console.error(`Error writing file: ${err.message}`); // eslint-disable-line
   }
 );
+=======
+writeFile('config/README.md', data).then(() =>
+{
+	console.log('done'); // eslint-disable-line
+}, (err) =>
+{
+	console.error(`Error writing file: ${err.message}`); // eslint-disable-line
+});
+>>>>>>> 61db9e3739921df6b2cf6edca4cefbaf55eb3796
