@@ -158,6 +158,7 @@ const Me = (props) =>
 		roomClient,
 		me,
 		settings,
+		switchTheme,
 		activeSpeaker,
 		spacing,
 		style,
@@ -937,6 +938,7 @@ const Me = (props) =>
 						isMe
 						isMirrored={settings.mirrorOwnVideo}
 						VideoView
+						switchTheme={switchTheme}
 						advancedMode={advancedMode}
 						peer={me}
 						displayName={settings.displayName}
@@ -1065,6 +1067,7 @@ const Me = (props) =>
 								isMe
 								isMirrored={settings.mirrorOwnVideo}
 								isExtraVideo
+								switchTheme={switchTheme}
 								advancedMode={advancedMode}
 								peer={me}
 								displayName={settings.displayName}
@@ -1126,6 +1129,7 @@ const Me = (props) =>
 							recordingConsents={recordingConsents}
 							isMe
 							isScreen
+							switchTheme={switchTheme}
 							advancedMode={advancedMode}
 							videoContain
 							videoTrack={screenProducer && screenProducer.track}
@@ -1145,6 +1149,7 @@ Me.propTypes =
 	advancedMode        : PropTypes.bool,
 	me                  : appPropTypes.Me.isRequired,
 	settings            : PropTypes.object,
+	switchTheme         : PropTypes.string.isRequired,
 	activeSpeaker       : PropTypes.bool,
 	micProducer         : appPropTypes.Producer,
 	webcamProducer      : appPropTypes.Producer,
@@ -1195,6 +1200,7 @@ const makeMapStateToProps = () =>
 			hasVideoPermission  : canShareVideo(state),
 			hasScreenPermission : canShareScreen(state),
 			noiseVolume         : noise,
+			switchTheme         : state.toolarea.switchTheme,
 			transports          : state.transports,
 			localRecordingState : state.recorder.localRecordingState.status,
 			recordingConsents   : recordingConsentsPeersSelector(state)
@@ -1219,6 +1225,7 @@ export default withRoomContext(connect(
 				prev.peers === next.peers &&
 				prev.producers === next.producers &&
 				prev.settings === next.settings &&
+				prev.toolarea.switchTheme === next.toolarea.switchTheme &&
 				prev.transports === next.transports &&
 				prev.recorder.localRecordingState.status ===
 				next.recorder.localRecordingState.status &&

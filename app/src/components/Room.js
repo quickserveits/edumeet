@@ -55,7 +55,7 @@ const styles = (theme) =>
 			display              : 'flex',
 			width                : '100%',
 			height               : '100%',
-			backgroundImage      : `url('')`,
+			backgroundImage      : 'url()',
 			backgroundAttachment : 'fixed',
 			backgroundPosition   : 'center',
 			backgroundSize       : 'cover',
@@ -186,6 +186,7 @@ class Room extends React.PureComponent
 			buttonControlBar,
 			drawerOverlayed,
 			toolAreaOpen,
+			switchTheme,
 			toggleToolArea,
 			classes,
 			theme
@@ -200,7 +201,7 @@ class Room extends React.PureComponent
 		const container = window !== undefined ? window.document.body : undefined;
 
 		return (
-			<div className={classes.root}>
+			<div className={switchTheme==='dark'? classes.root : classes.root1}>
 				{ !isElectron() &&
 					<CookieConsent
 						buttonText={
@@ -325,6 +326,7 @@ Room.propTypes =
 	buttonControlBar   : PropTypes.bool.isRequired,
 	drawerOverlayed    : PropTypes.bool.isRequired,
 	toolAreaOpen       : PropTypes.bool.isRequired,
+	switchTheme        : PropTypes.string.isRequired,
 	setToolbarsVisible : PropTypes.func.isRequired,
 	toggleToolArea     : PropTypes.func.isRequired,
 	classes            : PropTypes.object.isRequired,
@@ -339,7 +341,8 @@ const mapStateToProps = (state) =>
 		showNotifications : state.settings.showNotifications,
 		buttonControlBar  : state.settings.buttonControlBar,
 		drawerOverlayed   : state.settings.drawerOverlayed,
-		toolAreaOpen      : state.toolarea.toolAreaOpen
+		toolAreaOpen      : state.toolarea.toolAreaOpen,
+		switchTheme       : state.toolarea.switchTheme
 	});
 
 const mapDispatchToProps = (dispatch) =>
@@ -368,7 +371,8 @@ export default connect(
 				prev.settings.showNotifications === next.settings.showNotifications &&
 				prev.settings.buttonControlBar === next.settings.buttonControlBar &&
 				prev.settings.drawerOverlayed === next.settings.drawerOverlayed &&
-				prev.toolarea.toolAreaOpen === next.toolarea.toolAreaOpen
+				prev.toolarea.toolAreaOpen === next.toolarea.toolAreaOpen&&
+				prev.toolarea.switchTheme === next.toolarea.switchTheme
 			);
 		}
 	}

@@ -3,7 +3,8 @@ const initialState =
 	toolAreaOpen   : false,
 	currentToolTab : 'chat', // chat, settings, users
 	unreadMessages : 0,
-	unreadFiles    : 0
+	unreadFiles    : 0,
+	switchTheme    : 'dark'
 };
 
 const toolarea = (state = initialState, action) =>
@@ -37,12 +38,13 @@ const toolarea = (state = initialState, action) =>
 
 		case 'TOGGLE_SWITCH_THEME':
 		{
-			let switchTheme = 'light';
+			let switchTheme = 'dark';
 
-			if (state.switchTheme === 'light')
+			if (state.switchTheme === 'dark')
 			{
-				switchTheme='dark'
+				switchTheme='light';
 			}
+
 			return { ...state, switchTheme };
 		}
 

@@ -251,12 +251,6 @@ const TopBar = (props) =>
 		handleMobileMenuClose();
 	};
 
-	const handleThemeChange = () =>
-	{
-		setDarkState(!darkState);
-		toggleSwitchTheme();
-	};
-
 	const {
 		roomClient,
 		room,
@@ -305,6 +299,12 @@ const TopBar = (props) =>
 	// did it change?
 	recorder.checkMicProducer(producers);
 	recorder.checkAudioConsumer(consumers, recordingConsents);
+
+	const handleThemeChange = () =>
+	{
+		setDarkState(!darkState);
+		toggleSwitchTheme();
+	};
 
 	useEffect(() =>
 	{
@@ -406,6 +406,18 @@ const TopBar = (props) =>
 			defaultMessage : 'Start local recording'
 		});
 
+	const cloudRecordingTooltip = (cloudRecordingState.status === 'start' ||
+								cloudRecordingState.status === 'resume') ?
+		intl.formatMessage({
+			id             : 'tooltip.stopcloudRecording',
+			defaultMessage : 'Stop cloud recording'
+		})
+		:
+		intl.formatMessage({
+			id             : 'tooltip.startcloudRecording',
+			defaultMessage : 'Start cloud recording'
+		});
+
 	const recordingPausedTooltip = localRecordingState.status === 'pause' ?
 		intl.formatMessage({
 			id             : 'tooltip.resumeLocalRecording',
@@ -415,6 +427,17 @@ const TopBar = (props) =>
 		intl.formatMessage({
 			id             : 'tooltip.pauseLocalRecording',
 			defaultMessage : 'Pause local recording'
+		});
+
+		const cloudRecordingPausedTooltip = cloudRecordingState.status === 'pause' ?
+		intl.formatMessage({
+			id             : 'tooltip.resumecloudRecording',
+			defaultMessage : 'Resume cloud recording'
+		})
+		:
+		intl.formatMessage({
+			id             : 'tooltip.pausecloudRecording',
+			defaultMessage : 'Pause cloud recording'
 		});
 
 	const fullscreenTooltip = fullscreen ?
@@ -573,6 +596,24 @@ const TopBar = (props) =>
 								onClick={() => setSettingsOpen(!room.settingsOpen)}
 							>
 								<SettingsIcon />
+							</IconButton>
+						</Tooltip>
+						<Tooltip
+							title={intl.formatMessage({
+								id             : 'tooltip.theme',
+								defaultMessage : 'Change theme'
+							})}
+						>
+							<IconButton
+								aria-label={intl.formatMessage({
+									id             : 'tooltip.theme',
+									defaultMessage : 'Change theme'
+								})}
+								className={classes.actionButton}
+								color='inherit'
+								// onClick={() => setSettingsOpen(!room.settingsOpen)}
+							>
+								<Switch checked={darkState} onChange={handleThemeChange} />
 							</IconButton>
 						</Tooltip>
 						<Tooltip title={lockTooltip}>
@@ -1148,20 +1189,6 @@ const TopBar = (props) =>
 				</MenuItem>
 				<MenuItem
 					aria-label={intl.formatMessage({
-						id             : 'tooltip.theme',
-						defaultMessage : 'Show theme'
-					})}
-				>
-					<Switch checked={darkState} onChange={handleThemeChange} />
-					<p className={classes.moreAction}>
-						<FormattedMessage
-							id='tooltip.theme'
-							defaultMessage='Show Theme'
-						/>
-					</p>
-				</MenuItem>
-				<MenuItem
-					aria-label={intl.formatMessage({
 						id             : 'tooltip.participants',
 						defaultMessage : 'Show participants'
 					})}
@@ -1354,6 +1381,7 @@ TopBar.propTypes =
 	locale               : PropTypes.string.isRequired,
 	localesList          : PropTypes.array.isRequired,
 	localRecordingState  : PropTypes.string,
+	cloudRecordingState  : PropTypes.string,
 	recordingInProgress  : PropTypes.bool,
 	recordingPeers       : PropTypes.array,
 	recordingMimeType    : PropTypes.string,
@@ -1389,6 +1417,7 @@ const makeMapStateToProps = () =>
 			loggedIn            : state.me.loggedIn,
 			loginEnabled        : state.me.loginEnabled,
 			localRecordingState : state.recorder.localRecordingState,
+			cloudRecordingState : state.recorder.cloudRecordingState,
 			recordingInProgress	: recordingInProgressSelector(state),
 			recordingPeers      : recordingInProgressPeersSelector(state),
 			recordingConsents   : recordingConsentsPeersSelector(state),
@@ -1485,6 +1514,8 @@ export default withRoomContext(connect(
 				prev.me.roles === next.me.roles &&
 				prev.recorder.localRecordingState.status ===
 				next.recorder.localRecordingState.status &&
+				prev.recorder.cloudRecordingState.status ===
+				next.recorder.cloudRecordingState.status &&
 				prev.toolarea.unreadMessages === next.toolarea.unreadMessages &&
 				prev.toolarea.unreadFiles === next.toolarea.unreadFiles &&
 				prev.toolarea.toolAreaOpen === next.toolarea.toolAreaOpen &&

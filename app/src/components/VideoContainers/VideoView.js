@@ -27,6 +27,19 @@ const styles = (theme) =>
 			overflow      : 'hidden'
 		},
 
+		root1 :
+		{
+			position      : 'relative',
+			flex          : '100 100 auto',
+			height        : '100%',
+			width         : '100%',
+			display       : 'flex',
+			flexDirection : 'column',
+			overflow      : 'hidden',
+			background    : 'white',
+			border        : '2px solid #231f44'
+		},
+
 		video :
 		{
 			flex               : '100 100 auto',
@@ -37,6 +50,35 @@ const styles = (theme) =>
 			transitionProperty : 'opacity',
 			transitionDuration : '.15s',
 			backgroundColor    : 'var(--peer-video-bg-color)',
+			'&.isMirrored'     :
+			{
+				transform : 'scaleX(-1)'
+			},
+			'&.hidden' :
+			{
+				opacity            : 0,
+				transitionDuration : '0s'
+			},
+			'&.loading' :
+			{
+				filter : 'blur(5px)'
+			},
+			'&.contain' :
+			{
+				objectFit       : 'contain',
+				backgroundColor : 'rgba(0, 0, 0, 1)'
+			}
+		},
+		video1 :
+		{
+			flex               : '100 100 auto',
+			height             : '100%',
+			width              : '100%',
+			objectFit          : 'contain',
+			userSelect         : 'none',
+			transitionProperty : 'opacity',
+			transitionDuration : '.15s',
+			backgroundColor    : '',
 			'&.isMirrored'     :
 			{
 				transform : 'scaleX(-1)'
@@ -216,6 +258,7 @@ class VideoView extends React.PureComponent
 			videoContain,
 			advancedMode,
 			videoVisible,
+			switchTheme,
 			videoMultiLayer,
 			audioScore,
 			videoScore,
@@ -303,8 +346,10 @@ class VideoView extends React.PureComponent
 			}
 		}
 
+		const videoClass = switchTheme==='dark'?classes.video:classes.video1;
+
 		return (
-			<div className={classes.root}>
+			<div className={switchTheme==='dark'?classes.root:classes.root1}>
 				<div className={classes.info}>
 					<div className={classes.media}>
 						{(audioCodec || videoCodec) &&
@@ -451,7 +496,7 @@ class VideoView extends React.PureComponent
 
 				<video
 					ref='videoElement'
-					className={classnames(classes.video, {
+					className={classnames(videoClass, {
 						hidden : (!videoVisible ||
 							(
 								!isMe &&
@@ -666,7 +711,8 @@ VideoView.propTypes =
 	opusConfig                     : PropTypes.string,
 	localRecordingState            : PropTypes.string,
 	recordingConsents              : PropTypes.array,
-	peer                           : PropTypes.object
+	peer                           : PropTypes.object,
+	switchTheme                    : PropTypes.string
 
 };
 
