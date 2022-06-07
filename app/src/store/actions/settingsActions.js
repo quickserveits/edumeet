@@ -4,6 +4,12 @@ export const setSelectedAudioDevice = (deviceId) =>
 		payload : { deviceId }
 	});
 
+export const setLogedUserDetails= (userData) =>
+	({
+		type    : 'SET_USER_DATA',
+		payload : { userData }
+	});
+
 export const setSelectedAudioOutputDevice = (deviceId) =>
 	({
 		type    : 'CHANGE_AUDIO_OUTPUT_DEVICE',

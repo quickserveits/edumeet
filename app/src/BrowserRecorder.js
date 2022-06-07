@@ -394,6 +394,323 @@ export default class BrowserRecorder
 		store.dispatch(recorderActions.setLocalRecordingState('resume'));
 		await this.roomClient.sendRequest('setLocalRecording', { localRecordingState: 'resume' });
 	}
+
+	async startCloudRecording(
+		{
+			roomClient, additionalAudioTracks, recordingMimeType, roomname
+		})
+	{
+		this.roomClient = roomClient;
+		this.recordingMimeType = recordingMimeType;
+		this.logger.debug('startCloudRecording()');
+
+		this.ctx = new AudioContext();
+		this.dest = this.ctx.createMediaStreamDestination();
+		this.gainNode = this.ctx.createGain();
+		this.gainNode.connect(this.dest);
+
+		// Check
+		if (typeof MediaRecorder === undefined)
+		{
+			throw new Error('Unsupported media recording API');
+		}
+		// Check mimetype is supported by the browser
+		if (MediaRecorder.isTypeSupported(this.recordingMimeType) === false)
+		{
+			throw new Error('Unsupported media recording format %O', this.recordingMimeType);
+		}
+
+		try
+		{
+			store.dispatch(recorderActions.setCloudRecordingState('start'));
+
+			// Screensharing
+			this.gdmStream = await navigator.mediaDevices.getDisplayMedia(
+				this.RECORDING_CONSTRAINTS
+			);
+
+			this.gdmStream.getVideoTracks().forEach((track) =>
+			{
+				track.addEventListener('ended', (e) =>
+				{
+					this.logger.debug(`gdmStream ${track.kind} track ended event: ${JSON.stringify(e)}`);
+					this.stopCloudRecording();
+				});
+			});
+
+			if (additionalAudioTracks.length>0)
+			{
+				// add mic track
+				this.recorderStream = this.mixer(additionalAudioTracks[0], this.gdmStream);
+				// add other audio tracks
+				for (let i = 1; i < additionalAudioTracks.length; i++)
+				{
+					this.addTrack(additionalAudioTracks[i]);
+				}
+			}
+			else
+			{
+				this.recorderStream = this.mixer(null, this.gdmStream);
+			}
+
+			const dt = new Date();
+			const rdt = `${dt.getFullYear() }-${ (`0${ dt.getMonth()+1}`).slice(-2) }-${ (`0${ dt.getDate()}`).slice(-2) }_${dt.getHours() }_${(`0${ dt.getMinutes()}`).slice(-2) }_${dt.getSeconds()}`;
+
+			this.recorder = new MediaRecorder(
+				this.recorderStream, { mimeType: this.recordingMimeType }
+			);
+
+			const ext = this.recorder.mimeType.split(';')[0].split('/')[1];
+
+			this.fileName = `${roomname}-recording-${rdt}.${ext}`;
+
+			if (typeof indexedDB === 'undefined' || typeof indexedDB.open === 'undefined')
+			{
+				this.logger.warn('IndexedDB API is not available in this browser. Fallback to ');
+				this.logToIDB = false;
+			}
+			else
+			{
+				this.idbName = Date.now();
+				const idbStoreName = this.idbStoreName;
+
+				this.idbDB = await openDB(this.idbName, 1,
+					{
+						upgrade(db)
+						{
+							db.createObjectStore(idbStoreName);
+						}
+					}
+				);
+			}
+
+			let chunkCounter = 0;
+
+			// Save a recorded chunk (blob) to indexedDB
+			const saveToDB = async (data) =>
+			{
+				return await this.idbDB.put(this.idbStoreName, data, Date.now());
+			};
+
+			if (this.recorder)
+			{
+				this.recorder.ondataavailable = (e) =>
+				{
+					if (e.data && e.data.size > 0)
+					{
+						chunkCounter++;
+						this.logger.debug(`put chunk: ${chunkCounter}`);
+						if (this.logToIDB)
+						{
+							try
+							{
+								saveToDB(e.data);
+							}
+							catch (error)
+							{
+								this.logger.error('Error during saving data chunk to IndexedDB! error:%O', error);
+							}
+						}
+						else
+						{
+							this.recordingData.push(e.data);
+						}
+					}
+				};
+
+				this.recorder.onerror = (error) =>
+				{
+					this.logger.error(`Recorder onerror: ${error}`);
+					switch (error.name)
+					{
+						case 'SecurityError':
+							store.dispatch(requestActions.notify(
+								{
+									type : 'error',
+									text : this.intl.formatMessage({
+										id             : 'room.localRecordingSecurityError',
+										defaultMessage : 'Recording the specified source is not allowed due to security restrictions. Check you client settings!'
+									})
+								}));
+							break;
+						case 'InvalidStateError':
+						default:
+							throw new Error(error);
+					}
+
+				};
+
+				this.recorder.onstop = (e) =>
+				{
+					this.logger.debug(`Logger stopped event: ${e}`);
+
+					if (this.logToIDB)
+					{
+						try
+						{
+							const useFallback = false;
+
+							if (useFallback)
+							{
+								this.idbDB.getAll(this.idbStoreName).then((blobs) =>
+								{
+
+									this.saveRecordingAndCleanup(blobs, this.idbDB, this.idbName);
+
+								});
+							}
+							else
+							{
+								// stream saver
+								// On firefox WritableStream isn't implemented yet web-streams-polyfill/ponyfill will fix it
+								if (!window.WritableStream)
+								{
+									streamSaver.WritableStream = WritableStream;
+								}
+								const fileStream = streamSaver.createWriteStream(`${this.idbName}.webm`, {
+									// size : blob.size // Makes the procentage visiable in the download
+								});
+
+								const writer = fileStream.getWriter();
+
+								this.idbDB.getAllKeys(this.idbStoreName).then((keys) =>
+								{
+									// recursive function to save the data from the indexed db
+									this.saveRecordingWithStreamSaver(
+										keys, writer, true, this.idbDB, this.idbName
+									);
+								});
+							}
+						}
+						catch (error)
+						{
+							this.logger.error('Error during getting all data chunks from IndexedDB! error: %O', error);
+						}
+
+					}
+					else
+					{
+						this.saveRecordingAndCleanup(this.recordingData, this.idbDB, this.idbName);
+					}
+
+				};
+
+				this.recorder.start(this.RECORDING_SLICE_SIZE);
+				// abort so it dose not look stuck
+
+				window.onbeforeunload = () =>
+				{
+					if (this.recorder !== null)
+					{
+						this.stopCloudRecording();
+
+						// evt.returnValue = 'Are you sure you want to leave? Recording in process';
+					}
+				};
+				recorderActions.setCloudRecordingState('start');
+
+			}
+		}
+		catch (error)
+		{
+			store.dispatch(requestActions.notify(
+				{
+					type : 'error',
+					text : this.intl.formatMessage({
+						id             : 'room.unexpectedErrorDuringLocalRecording',
+						defaultMessage : 'Unexpected error ocurred during local recording'
+					})
+				}));
+			this.logger.error('startCloudRecording() [error:"%o"]', error);
+
+			if (this.recorder) this.recorder.stop();
+			store.dispatch(recorderActions.setCloudRecordingState('stop'));
+			if (typeof this.gdmStream !== 'undefined' && this.gdmStream && typeof this.gdmStream.getTracks === 'function')
+			{
+				this.gdmStream.getTracks().forEach((track) => track.stop());
+			}
+
+			this.gdmStream = null;
+			this.recorderStream = null;
+			this.recorder = null;
+
+			return -1;
+		}
+
+		try
+		{
+
+			await this.roomClient.sendRequest('setLocalRecording', { localRecordingState: 'start' });
+
+			store.dispatch(requestActions.notify(
+				{
+					text : this.intl.formatMessage({
+						id             : 'room.youStartedLocalRecording',
+						defaultMessage : 'You started local recording'
+					})
+				}));
+		}
+		catch (error)
+		{
+			store.dispatch(requestActions.notify(
+				{
+					type : 'error',
+					text : this.intl.formatMessage({
+						id             : 'room.unexpectedErrorDuringLocalRecording',
+						defaultMessage : 'Unexpected error ocurred during local recording'
+					})
+				}));
+			this.logger.error('startCloudRecording() [error:"%o"]', error);
+
+		}
+	}
+	// eslint-disable-next-line no-unused-vars
+	async stopCloudRecording()
+	{
+		this.logger.debug('stopCloudRecording()');
+		try
+		{
+			this.recorder.stop();
+
+			store.dispatch(requestActions.notify(
+				{
+					text : this.intl.formatMessage({
+						id             : 'room.youStoppedLocalRecording',
+						defaultMessage : 'You stopped local recording'
+					})
+				}));
+
+			store.dispatch(recorderActions.setCloudRecordingState('stop'));
+			await this.roomClient.sendRequest('setLocalRecording', { localRecordingState: 'stop' });
+
+		}
+		catch (error)
+		{
+
+			store.dispatch(requestActions.notify(
+				{
+					type : 'error',
+					text : this.intl.formatMessage({
+						id             : 'room.unexpectedErrorDuringLocalRecording',
+						defaultMessage : 'Unexpected error ocurred during local recording'
+					})
+				}));
+
+			this.logger.error('stopCloudRecording() [error:"%o"]', error);
+		}
+	}
+	async pauseCloudRecording()
+	{
+		this.recorder.pause();
+		store.dispatch(recorderActions.setCloudRecordingState('pause'));
+		await this.roomClient.sendRequest('setLocalRecording', { localRecordingState: 'pause' });
+	}
+	async resumeCloudRecording()
+	{
+		this.recorder.resume();
+		store.dispatch(recorderActions.setCloudRecordingState('resume'));
+		await this.roomClient.sendRequest('setLocalRecording', { localRecordingState: 'resume' });
+	}
 	invokeSaveAsDialog(blob)
 	{
 		const link = document.createElement('a');

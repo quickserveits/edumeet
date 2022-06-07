@@ -288,6 +288,7 @@ const TopBar = (props) =>
 		locale,
 		localesList,
 		localRecordingState,
+		cloudRecordingState,
 		recordingInProgress,
 		recordingPeers,
 		recordingMimeType,
@@ -409,12 +410,12 @@ const TopBar = (props) =>
 	const cloudRecordingTooltip = (cloudRecordingState.status === 'start' ||
 								cloudRecordingState.status === 'resume') ?
 		intl.formatMessage({
-			id             : 'tooltip.stopcloudRecording',
+			id             : 'tooltip.stopCloudRecording',
 			defaultMessage : 'Stop cloud recording'
 		})
 		:
 		intl.formatMessage({
-			id             : 'tooltip.startcloudRecording',
+			id             : 'tooltip.startCloudRecording',
 			defaultMessage : 'Start cloud recording'
 		});
 
@@ -914,6 +915,133 @@ const TopBar = (props) =>
 										<FormattedMessage
 											id='tooltip.startLocalRecording'
 											defaultMessage='Start local recording'
+										/>
+									</p>
+							}
+
+						</MenuItem>
+						}
+						{
+							(
+								cloudRecordingState.status === 'start' ||
+								cloudRecordingState.status === 'resume' ||
+								cloudRecordingState.status === 'pause'
+							)
+							&&
+							<MenuItem
+								aria-label={cloudRecordingPausedTooltip}
+								onClick={() =>
+								{
+									handleMenuClose();
+									if (cloudRecordingState.status === 'pause')
+									{
+										recorder.resumeCloudRecording();
+									}
+									else
+									{
+										recorder.pauseCloudRecording();
+									}
+								}
+								}
+							>
+								<Badge
+									color='primary'
+								>
+									{ cloudRecordingState.status === 'pause' ?
+										<PauseCircleFilledIcon />
+										:
+										<PauseCircleOutlineIcon />
+									}
+								</Badge>
+								{ cloudRecordingState.status === 'pause' ?
+									<p className={classes.moreAction}>
+										<FormattedMessage
+											id='tooltip.resumeCloudRecording'
+											defaultMessage='Resume cloud recording'
+										/>
+									</p>
+									:
+									<p className={classes.moreAction}>
+										<FormattedMessage
+											id='tooltip.pauseCloudRecording'
+											defaultMessage='Pause cloud recording'
+										/>
+									</p>
+								}
+
+							</MenuItem>
+						}
+						{ config.cloudRecordingEnabled && isSafari
+						&& canRecord &&
+						<MenuItem
+							aria-label={recordingTooltip}
+							onClick={async () =>
+							{
+								handleMenuClose();
+								if (cloudRecordingState.status === 'start' ||
+									cloudRecordingState.status === 'pause' ||
+									cloudRecordingState.status === 'resume')
+								{
+									recorder.stopCloudRecording(meId);
+								}
+								else
+								{
+
+									try
+									{
+										const additionalAudioTracks = [];
+										const micProducer = Object.values(producers).find((p) => p.source === 'mic');
+
+										if (micProducer) additionalAudioTracks.push(micProducer.track);
+										const roomname = room.name;
+
+										recorder.startCloudRecording({
+											roomClient,
+											additionalAudioTracks,
+											recordingMimeType,
+											roomname
+										});
+
+										recorder.checkAudioConsumer(consumers);
+
+									}
+									catch (err)
+									{
+										logger.error('Error during starting the recording! error:%O', err.message);
+									}
+
+								}
+							}
+							}
+						>
+							<Badge
+								color='primary'
+							>
+								{
+									(cloudRecordingState.status === 'start' ||
+									cloudRecordingState.status === 'pause' ||
+									cloudRecordingState.status === 'resume') ?
+										<StopIcon />
+										:
+										<FiberManualRecordIcon />
+								}
+							</Badge>
+
+							{
+								(cloudRecordingState.status === 'start' ||
+								cloudRecordingState.status === 'pause' ||
+								cloudRecordingState.status === 'resume') ?
+									<p className={classes.moreAction}>
+										<FormattedMessage
+											id='tooltip.stopCloudRecording'
+											defaultMessage='Stop cloud recording'
+										/>
+									</p>
+									:
+									<p className={classes.moreAction}>
+										<FormattedMessage
+											id='tooltip.startCloudRecording'
+											defaultMessage='Start cloud recording'
 										/>
 									</p>
 							}

@@ -41,7 +41,8 @@ const initialState =
 	opusFec                   : config.opusFec,
 	opusPtime                 : config.opusPtime,
 	opusMaxPlaybackRate       : config.opusMaxPlaybackRate,
-	enableOpusDetails         : false
+	enableOpusDetails         : false,
+	userData                  : {}
 };
 
 const settings = (state = initialState, action) =>
@@ -56,6 +57,11 @@ const settings = (state = initialState, action) =>
 		case 'CHANGE_AUDIO_DEVICE':
 		{
 			return { ...state, selectedAudioDevice: action.payload.deviceId };
+		}
+
+		case 'SET_USER_DATA':
+		{
+			return { ...state, userData: action.payload.userData };
 		}
 
 		case 'CHANGE_AUDIO_OUTPUT_DEVICE':

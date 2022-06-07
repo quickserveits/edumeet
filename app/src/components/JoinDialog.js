@@ -178,6 +178,7 @@ const JoinDialog = ({
 	displayNameInProgress,
 	loggedIn,
 	changeDisplayName,
+	setLogedUserDetails,
 	setMediaPerms,
 	classes,
 	setAudioMuted,
@@ -211,6 +212,18 @@ const JoinDialog = ({
 
 	useEffect(() =>
 	{
+		if (location.search)
+		{
+
+			const params = location.search.split('?')[1].split('&');
+
+			const data = {};
+
+			params.forEach((da, ind) => { data[params[ind].split('=')[0]] = params[ind].split('=')[1]; });
+
+			setLogedUserDetails(data);
+		}
+
 		(location.pathname === '/') && history.push(encodeURIComponent(roomId));
 	});
 
@@ -783,6 +796,7 @@ JoinDialog.propTypes =
 	loggedIn              : PropTypes.bool.isRequired,
 	changeDisplayName     : PropTypes.func.isRequired,
 	setMediaPerms  	      : PropTypes.func.isRequired,
+	setLogedUserDetails   : PropTypes.func.isRequired,
 	classes               : PropTypes.object.isRequired,
 	mediaPerms            : PropTypes.object.isRequired,
 	setAudioMuted         : PropTypes.func.isRequired,
@@ -812,6 +826,10 @@ const mapDispatchToProps = (dispatch) =>
 		changeDisplayName : (displayName) =>
 		{
 			dispatch(settingsActions.setDisplayName(displayName));
+		},
+		setLogedUserDetails : (userData) =>
+		{
+			dispatch(settingsActions.setLogedUserDetails(userData));
 		},
 
 		setMediaPerms : (mediaPerms) =>
