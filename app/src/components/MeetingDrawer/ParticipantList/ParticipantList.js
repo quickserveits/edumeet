@@ -15,38 +15,38 @@ import ListMe from './ListMe';
 import ListHost from './ListModerator';
 import Volume from '../../Containers/Volume';
 import ShareDialogs from './ShareDialogs';
-import { Button } from '@material-ui/core';
+import MyPolls from '../Polls/MyPolls';
 
 const styles = (theme) =>
-	({
-		root :
+({
+	root :
+	{
+		width     : '100%',
+		overflowY : 'auto',
+		padding   : theme.spacing(1)
+	},
+	list :
+	{
+		listStyleType   : 'none',
+		padding         : theme.spacing(1),
+		boxShadow       : '0 2px 5px 2px rgba(0, 0, 0, 0.2)',
+		backgroundColor : 'rgba(255, 255, 255, 1)'
+	},
+	listheader :
+	{
+		fontWeight : 'bolder'
+	},
+	listItem :
+	{
+		width                : '100%',
+		overflow             : 'hidden',
+		cursor               : 'pointer',
+		'&:not(:last-child)' :
 		{
-			width     : '100%',
-			overflowY : 'auto',
-			padding   : theme.spacing(1)
-		},
-		list :
-		{
-			listStyleType   : 'none',
-			padding         : theme.spacing(1),
-			boxShadow       : '0 2px 5px 2px rgba(0, 0, 0, 0.2)',
-			backgroundColor : 'rgba(255, 255, 255, 1)'
-		},
-		listheader :
-		{
-			fontWeight : 'bolder'
-		},
-		listItem :
-		{
-			width                : '100%',
-			overflow             : 'hidden',
-			cursor               : 'pointer',
-			'&:not(:last-child)' :
-			{
-				borderBottom : '1px solid #CBCBCB'
-			}
+			borderBottom : '1px solid #CBCBCB'
 		}
-	});
+	}
+});
 
 class ParticipantList extends React.PureComponent
 {
@@ -82,7 +82,7 @@ class ParticipantList extends React.PureComponent
 
 		return (
 			<div className={classes.root} ref={(node) => { this.node = node; }}>
-				{ isHost &&
+				{isHost &&
 					<ul className={classes.list}>
 						<li className={classes.listheader}>
 							<FormattedMessage
@@ -105,6 +105,15 @@ class ParticipantList extends React.PureComponent
 				<ul className={classes.list}>
 					<li className={classes.listheader}>
 						<FormattedMessage
+							id='room.Polls'
+							defaultMessage='Polls'
+						/>
+					</li>
+					<MyPolls />
+				</ul>
+				<ul className={classes.list}>
+					<li className={classes.listheader}>
+						<FormattedMessage
 							id='label.participants'
 							defaultMessage='Participants'
 						/>
@@ -112,7 +121,7 @@ class ParticipantList extends React.PureComponent
 					<Flipper
 						flipKey={participants}
 					>
-						{ participants.map((peer) => (
+						{participants.map((peer) => (
 							<Flipped key={peer.id} flipId={peer.id}>
 								<li
 									key={peer.id}

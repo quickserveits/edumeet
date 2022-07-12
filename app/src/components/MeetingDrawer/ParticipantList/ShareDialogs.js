@@ -7,7 +7,6 @@ import Close from '@material-ui/icons/Close';
 import MuiDialogContent from '@material-ui/core/DialogContent';
 import MuiDialogActions from '@material-ui/core/DialogActions';
 import { useLocation } from 'react-router-dom';
-import { config } from '../../../config';
 import { ShareSocial } from 'react-share-social';
 import { withRoomContext } from '../../../RoomContext';
 import { Button } from '@material-ui/core';
@@ -26,8 +25,6 @@ const styles = (theme) =>
 			display              : 'flex',
 			width                : '100%',
 			height               : '100%',
-			backgroundColor      : 'var(--background-color)',
-			backgroundImage      : `url(${config.background})`,
 			backgroundAttachment : 'fixed',
 			backgroundPosition   : 'center',
 			backgroundSize       : 'cover',

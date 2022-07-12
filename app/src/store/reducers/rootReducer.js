@@ -15,6 +15,7 @@ import recorder from './recorder';
 import settings from './settings';
 import config from './config';
 import intl from './intl';
+import launchRoom from './launchRoom';
 
 export default combineReducers({
 	// intl : intlReducer,
@@ -27,6 +28,7 @@ export default combineReducers({
 	lobbyPeers,
 	peerVolumes,
 	notifications,
+	launchRoom,
 	toolarea,
 	chat,
 	files,

@@ -24,7 +24,8 @@ const styles = (theme) =>
 			width         : '100%',
 			display       : 'flex',
 			flexDirection : 'column',
-			overflow      : 'hidden'
+			overflow      : 'hidden',
+			borderRadius  : 10
 		},
 
 		root1 :
@@ -37,11 +38,13 @@ const styles = (theme) =>
 			flexDirection : 'column',
 			overflow      : 'hidden',
 			background    : 'white',
-			border        : '2px solid #231f44'
+			border        : '2px solid #231f44',
+			borderRadius  : 10
 		},
 
 		video :
 		{
+			borderRadius       : 10,
 			flex               : '100 100 auto',
 			height             : '100%',
 			width              : '100%',
@@ -71,6 +74,7 @@ const styles = (theme) =>
 		},
 		video1 :
 		{
+			borderRadius       : 10,
 			flex               : '100 100 auto',
 			height             : '100%',
 			width              : '100%',
@@ -197,9 +201,24 @@ const styles = (theme) =>
 			fontWeight      : 400,
 			color           : 'rgba(255, 255, 255, 0.85)',
 			border          : 'none',
-			borderBottom    : '1px solid #e6993f',
-			backgroundColor : 'rgba(0, 0, 0, 0.25)',
+			// borderBottom    : '1px solid #e6993f',
+			backgroundColor : 'transparent',
+			// backgroundColor : 'rgba(0, 0, 0, 0.25)',
 			padding         : theme.spacing(0.6)
+		},
+		displayNameStatic1 :
+		{
+			userSelect      : 'none',
+			cursor          : 'text',
+			fontSize        : 14,
+			fontWeight      : 400,
+			color           : 'black',
+			backgroundColor : 'transparent',
+			padding         : theme.spacing(0.6),
+			'&:hover'       :
+			{
+				backgroundColor : 'rgb(174, 255, 0, 0.25)'
+			}
 		},
 		displayNameStatic :
 		{
@@ -208,7 +227,7 @@ const styles = (theme) =>
 			fontSize        : 14,
 			fontWeight      : 400,
 			color           : 'rgba(255, 255, 255, 0.85)',
-			backgroundColor : 'rgba(0, 0, 0, 0.25)',
+			backgroundColor : 'transparent',
 			padding         : theme.spacing(0.6),
 			'&:hover'       :
 			{
@@ -346,10 +365,11 @@ class VideoView extends React.PureComponent
 			}
 		}
 
-		const videoClass = switchTheme==='dark'?classes.video:classes.video1;
+		// const videoClass = switchTheme==='dark'?classes.video:classes.video1;
+		// const staticName = switchTheme==='dark'?classes.displayNameStatic:classes.displayNameStatic1;
 
 		return (
-			<div className={switchTheme==='dark'?classes.root:classes.root1}>
+			<div className={classes.root}>
 				<div className={classes.info}>
 					<div className={classes.media}>
 						{(audioCodec || videoCodec) &&
@@ -459,7 +479,7 @@ class VideoView extends React.PureComponent
 										<EditableInput
 											value={displayName}
 											propName='newDisplayName'
-											className={classes.displayNameEdit}
+											className={classes.displayNameStatic}
 											classLoading='loading'
 											classInvalid='invalid'
 											shouldBlockWhileLoading
@@ -474,7 +494,7 @@ class VideoView extends React.PureComponent
 										/>
 									</React.Fragment>
 									:
-									<span className={classes.displayNameStatic}>
+									<span className={classes.displayNameEdit}>
 										{
 											(
 												(
@@ -496,7 +516,7 @@ class VideoView extends React.PureComponent
 
 				<video
 					ref='videoElement'
-					className={classnames(videoClass, {
+					className={classnames(classes.video, {
 						hidden : (!videoVisible ||
 							(
 								!isMe &&
@@ -712,7 +732,7 @@ VideoView.propTypes =
 	localRecordingState            : PropTypes.string,
 	recordingConsents              : PropTypes.array,
 	peer                           : PropTypes.object,
-	switchTheme                    : PropTypes.string
+	switchTheme                    : PropTypes.string.isRequired
 
 };
 

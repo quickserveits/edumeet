@@ -26,11 +26,49 @@ const styles = (theme) =>
 	({
 		root :
 		{
+			borderRadius       : 10,
 			flex               : '0 0 auto',
 			boxShadow          : 'var(--peer-shadow)',
 			border             : 'var(--peer-border)',
 			touchAction        : 'none',
 			backgroundColor    : 'var(--peer-bg-color)',
+			backgroundImage    : 'var(--peer-empty-avatar)',
+			backgroundPosition : 'bottom',
+			backgroundSize     : 'auto 85%',
+			backgroundRepeat   : 'no-repeat',
+			'&.hover'          :
+			{
+				boxShadow : '0px 1px 3px rgba(0, 0, 0, 0.05) inset, 0px 0px 8px rgba(82, 168, 236, 0.9)'
+			},
+			'&.active-speaker' :
+			{
+				// transition  : 'filter .2s',
+				// filter      : 'grayscale(0)',
+				boxShadow   : 'var(--active-speaker-shadow)',
+				borderColor : 'var(--active-speaker-border-color)'
+			},
+			'&:not(.active-speaker):not(.screen)' :
+			{
+				// transition : 'filter 10s',
+				// filter     : 'grayscale(0.75)'
+			},
+			'&.webcam' :
+			{
+				order : 4
+			},
+			'&.screen' :
+			{
+				order : 3
+			}
+		},
+		root1 :
+		{
+			borderRadius       : 10,
+			flex               : '0 0 auto',
+			boxShadow          : 'var(--peer-shadow)',
+			border             : 'var(--peer-border)',
+			touchAction        : 'none',
+			backgroundColor    : 'white',
 			backgroundImage    : 'var(--peer-empty-avatar)',
 			backgroundPosition : 'bottom',
 			backgroundSize     : 'auto 85%',
@@ -68,19 +106,19 @@ const styles = (theme) =>
 		},
 		controls :
 		{
-			position        : 'absolute',
-			width           : '100%',
-			height          : '100%',
-			backgroundColor : 'rgba(0, 0, 0, 0.3)',
-			display         : 'flex',
-			justifyContent  : 'center',
-			alignItems      : 'flex-end',
-			padding         : theme.spacing(1),
-			zIndex          : 21,
-			opacity         : 1,
-			transition      : 'opacity 0.3s',
-			touchAction     : 'none',
-			'&.hover'       :
+			position       : 'absolute',
+			width          : '100%',
+			height         : '100%',
+			// backgroundColor : 'rgba(0, 0, 0, 0.3)',
+			display        : 'flex',
+			justifyContent : 'center',
+			alignItems     : 'flex-end',
+			padding        : theme.spacing(1),
+			zIndex         : 21,
+			opacity        : 1,
+			transition     : 'opacity 0.3s',
+			touchAction    : 'none',
+			'&.hover'      :
 			{
 				opacity : 1
 			},
@@ -99,16 +137,16 @@ const styles = (theme) =>
 		},
 		videoInfo :
 		{
-			position        : 'absolute',
-			width           : '100%',
-			height          : '100%',
-			backgroundColor : 'rgba(0, 0, 0, 0.3)',
-			display         : 'flex',
-			justifyContent  : 'center',
-			alignItems      : 'center',
-			padding         : theme.spacing(1),
-			zIndex          : 20,
-			'&.hide'        :
+			position       : 'absolute',
+			width          : '100%',
+			height         : '100%',
+			// backgroundColor : 'rgba(0, 0, 0, 0.3)',
+			display        : 'flex',
+			justifyContent : 'center',
+			alignItems     : 'center',
+			padding        : theme.spacing(1),
+			zIndex         : 20,
+			'&.hide'       :
 			{
 				transition : 'opacity 0.1s ease-in-out',
 				opacity    : 0
@@ -142,6 +180,7 @@ const Peer = (props) =>
 		peer,
 		activeSpeaker,
 		browser,
+		switchTheme,
 		micConsumer,
 		webcamConsumer,
 		screenConsumer,
@@ -389,6 +428,8 @@ const Peer = (props) =>
 	{
 		setMenuAnchorElement(null);
 	};
+
+	// const root = switchTheme==='dark'? classes.root : classes.root1;
 
 	return (
 		<React.Fragment>
@@ -665,6 +706,7 @@ const Peer = (props) =>
 						recordingConsents={recordingConsents}
 						showQuality
 						advancedMode={advancedMode}
+						switchTheme={switchTheme}
 						peer={peer}
 						displayName={peer.displayName}
 						showPeerInfo
@@ -841,6 +883,7 @@ const Peer = (props) =>
 								recordingConsents={recordingConsents}
 								showQuality
 								advancedMode={advancedMode}
+								switchTheme={switchTheme}
 								peer={peer}
 								displayName={peer.displayName}
 								showPeerInfo
@@ -1005,6 +1048,7 @@ const Peer = (props) =>
 							recordingConsents={recordingConsents}
 							showQuality
 							advancedMode={advancedMode}
+							switchTheme={switchTheme}
 							videoContain
 							consumerSpatialLayers={
 								screenConsumer ? screenConsumer.spatialLayers : null
@@ -1062,7 +1106,8 @@ Peer.propTypes =
 	isSelected               : PropTypes.bool,
 	mode                     : PropTypes.string.isRequired,
 	localRecordingState      : PropTypes.string,
-	recordingConsents        : PropTypes.array
+	recordingConsents        : PropTypes.array,
+	switchTheme              : PropTypes.string.isRequired
 };
 
 const makeMapStateToProps = (initialState, { id }) =>
@@ -1080,6 +1125,7 @@ const makeMapStateToProps = (initialState, { id }) =>
 			browser             : state.me.browser,
 			isSelected          : state.room.selectedPeers.includes(id),
 			mode                : state.room.mode,
+			switchTheme         : state.toolarea.switchTheme,
 			localRecordingState : state.recorder.localRecordingState.status,
 			recordingConsents   : recordingConsentsPeersSelector(state)
 		};

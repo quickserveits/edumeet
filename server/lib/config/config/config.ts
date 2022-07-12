@@ -7,10 +7,10 @@ import yaml from "yaml";
 import toml from "toml";
 import { cpus, networkInterfaces } from "os";
 
-import Logger from "../logger/Logger";
+import Logger from "../../logger/Logger";
 
-import * as userRoles from "../access/roles";
-import { BYPASS_ROOM_LOCK, BYPASS_LOBBY } from "../access/access";
+import * as userRoles from "../../access/roles";
+import { BYPASS_ROOM_LOCK, BYPASS_LOBBY } from "../../access/access";
 import {
   CHANGE_ROOM_LOCK,
   PROMOTE_PEER,
@@ -24,7 +24,7 @@ import {
   SHARE_FILE,
   MODERATE_FILES,
   MODERATE_ROOM,
-} from "../access/perms";
+} from "../../access/perms";
 
 const logger = new Logger("config");
 
@@ -485,7 +485,8 @@ let configError = "";
 let configLoaded = false;
 
 // Load config from file
-for (const format of ["json", "json5", "yaml", "yml", "toml"]) { // eslint-disable-line no-restricted-syntax
+for (const format of ["json", "json5", "yaml", "yml", "toml"]) {
+  // eslint-disable-line no-restricted-syntax
   const filepath = path.normalize(`${__dirname}/../../config/config.${format}`);
 
   if (fs.existsSync(filepath)) {

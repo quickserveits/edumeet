@@ -32,6 +32,7 @@ const styles = (theme) =>
 	({
 		root :
 		{
+			borderRadius       : 10,
 			flex               : '0 0 auto',
 			boxShadow          : 'var(--peer-shadow)',
 			border             : 'var(--peer-border)',
@@ -627,8 +628,8 @@ const Me = (props) =>
 							)}
 					>
 						<FormattedMessage
-							id='room.me'
-							defaultMessage='Me'
+							id={settings.displayName}
+							defaultMessage={settings.displayName}
 						/>
 					</p>
 					{/* /ME TAG */}

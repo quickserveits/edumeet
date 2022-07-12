@@ -218,6 +218,12 @@ export const setAudioMuted = (audioMuted) =>
 		payload : { audioMuted }
 	});
 
+export const setRoomName = (name) =>
+	({
+		type    : 'SET_ROOM_NAME',
+		payload : { name }
+	});
+
 export const setVideoMuted = (videoMuted) =>
 	({
 		type    : 'SET_VIDEO_MUTED',

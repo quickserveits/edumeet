@@ -50,6 +50,10 @@ class Peer extends EventEmitter
 
 		this._raisedHandTimestamp = null;
 
+		this._launchPollAnswer = false;
+
+		this._launchPollAnswerTimestamp = null;
+
 		this._localRecordingState = null;
 
 		this._recordingStateHistory = [];
@@ -282,9 +286,23 @@ class Peer extends EventEmitter
 		this._raisedHand = raisedHand;
 	}
 
-	get raisedHandTimestamp()
+	get launchPollAnswer()
 	{
-		return this._raisedHandTimestamp;
+		return this._launchPollAnswer;
+	}
+
+	set launchPollAnswer(launchPollAnswer)
+	{
+		launchPollAnswer ?
+			this._launchPollAnswerTimestamp = Date.now() :
+			this._launchPollAnswerTimestamp = null;
+
+		this._launchPollAnswer = launchPollAnswer;
+	}
+
+	get launchPollAnswerTimestamp()
+	{
+		return this._launchPollAnswerTimestamp;
 	}
 
 	get transports()

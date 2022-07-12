@@ -7,6 +7,7 @@ import * as meActions from './store/actions/meActions';
 import * as intlActions from './store/actions/intlActions';
 import * as roomActions from './store/actions/roomActions';
 import * as peerActions from './store/actions/peerActions';
+import * as LaunchPoll from './store/actions/launchRoomAction';
 import * as peerVolumeActions from './store/actions/peerVolumeActions';
 import * as settingsActions from './store/actions/settingsActions';
 import * as chatActions from './store/actions/chatActions';
@@ -775,8 +776,12 @@ export default class RoomClient
 			config.requestTimeout
 		);
 
+		console.log('interval::', interval);
+
 		return (...args) =>
 		{
+			console.log('...args::', ...args);
+			console.log('...called::', called);
 			if (called)
 				return;
 			called = true;
@@ -801,6 +806,8 @@ export default class RoomClient
 					{ method, data },
 					this.timeoutCallback((err, response) =>
 					{
+						console.log('method, data::', method, data);
+						console.log('err::', err);
 						if (err)
 							reject(err);
 						else
@@ -2382,6 +2389,29 @@ export default class RoomClient
 			meActions.setRaisedHandInProgress(false));
 	}
 
+	async setHandlePollLaunch(data)
+	{
+		logger.debug('setHandlePollLaunch: ', data);
+
+		try
+		{
+			console.log('data:::', data);
+
+			await this.sendRequest('launchPollAnswer', data);
+
+			store.dispatch(
+				LaunchPoll.setlaunchPoll(data));
+		}
+		catch (error)
+		{
+			logger.error('setlaunchPoll() [error:"%o"]', error);
+
+			console.log('error:::', error);
+			// We need to refresh the component for it to render changed state
+			store.dispatch(LaunchPoll.setlaunchPollError(false));
+		}
+	}
+
 	async setMaxSendingSpatialLayer(spatialLayer)
 	{
 		logger.debug('setMaxSendingSpatialLayer() [spatialLayer:"%s"]', spatialLayer);
@@ -2653,6 +2683,8 @@ export default class RoomClient
 	async join({ roomId, joinVideo, joinAudio })
 	{
 		await this._loadDynamicImports();
+
+		console.log('roomId::', roomId);
 
 		this._roomId = roomId;
 
@@ -3167,6 +3199,52 @@ export default class RoomClient
 							text = intl.formatMessage({
 								id             : 'room.loweredHand',
 								defaultMessage : '{displayName} put their hand down'
+							}, {
+								displayName
+							});
+						}
+
+						if (displayName)
+						{
+							store.dispatch(requestActions.notify(
+								{
+									text
+								}));
+						}
+
+						this._soundNotification(notification.method);
+
+						break;
+					}
+
+					case 'launchPollAnswer':
+					{
+						const {
+							questions,
+							adminId,
+							launchOpen
+						} = notification.data;
+						const id = notification.data.roomId;
+
+					console.log('notification.data.roomId:', notification.data);
+						store.dispatch(
+							LaunchPoll.setlaunchPoll({
+								roomId : id,
+								questions,
+								adminId,
+								launchOpen
+							})
+						);
+
+						const { displayName } = store.getState().peers[id];
+
+						let text;
+
+						if (launchOpen)
+						{
+							text = intl.formatMessage({
+								id             : 'room.raisedHand',
+								defaultMessage : '{displayName} raised their hand'
 							}, {
 								displayName
 							});

@@ -16,10 +16,10 @@ services:
     restart: unless-stopped
     user: "${CURRENT_USER}"
     volumes:
-    - ${PWD}/..:/Ejtimaa
-    - ${PWD}/config/Ejtimaa-server-config.js:/Ejtimaa/server/config/config.js:ro
-    - ${PWD}/config/Ejtimaa-server-config.yaml:/Ejtimaa/server/config/config.yaml:ro
-    - ${PWD}/config/Ejtimaa-app-config.js:/Ejtimaa/app/public/config/config.js:ro
+    - ${PWD}/..:/edumeet
+    - ${PWD}/config/edumeet-server-config.js:/edumeet/server/config/config.js:ro
+    - ${PWD}/config/edumeet-server-config.yaml:/edumeet/server/config/config.yaml:ro
+    - ${PWD}/config/edumeet-app-config.js:/edumeet/app/public/config/config.js:ro
     #- ${PWD}/../app/public/config/config.example.js:/Ejtimaa/app/public/config/config.js:ro
     network_mode: "host"
     extra_hosts:

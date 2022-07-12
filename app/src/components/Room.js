@@ -33,6 +33,7 @@ import RolesManager from './Controls/RolesManager';
 import LeaveDialog from './LeaveDialog';
 import HelpeDialog from './HelpeDialog';
 import { config } from '../config';
+import LaunchPoll from './MeetingDrawer/Polls/LaunchPoll';
 
 const TIMEOUT = config.hideTimeout || 5000;
 
@@ -43,8 +44,8 @@ const styles = (theme) =>
 			display              : 'flex',
 			width                : '100%',
 			height               : '100%',
-			backgroundColor      : 'var(--background-color)',
-			backgroundImage      : `url(${config.background})`,
+			backgroundColor      : 'rgb(32, 33, 36)',
+			// backgroundImage      : `url(${config.background})`,
 			backgroundAttachment : 'fixed',
 			backgroundPosition   : 'center',
 			backgroundSize       : 'cover',
@@ -183,6 +184,7 @@ class Room extends React.PureComponent
 			browser,
 			advancedMode,
 			showNotifications,
+			launchRoom,
 			buttonControlBar,
 			drawerOverlayed,
 			toolAreaOpen,
@@ -199,6 +201,12 @@ class Room extends React.PureComponent
 		}[room.mode];
 
 		const container = window !== undefined ? window.document.body : undefined;
+
+		console.log('launchRoom', launchRoom);
+
+		const { launchOpen }= launchRoom;
+
+		console.log('launchRoom', launchRoom);
 
 		return (
 			<div className={switchTheme==='dark'? classes.root : classes.root1}>
@@ -227,7 +235,9 @@ class Room extends React.PureComponent
 				{ showNotifications &&
 					<Notifications />
 				}
-
+				{launchOpen &&
+					<LaunchPoll />
+				}
 				<CssBaseline />
 
 				<TopBar
@@ -323,6 +333,7 @@ Room.propTypes =
 	browser            : PropTypes.object.isRequired,
 	advancedMode       : PropTypes.bool.isRequired,
 	showNotifications  : PropTypes.bool.isRequired,
+	launchRoom         : PropTypes.object.isRequired,
 	buttonControlBar   : PropTypes.bool.isRequired,
 	drawerOverlayed    : PropTypes.bool.isRequired,
 	toolAreaOpen       : PropTypes.bool.isRequired,
@@ -339,6 +350,7 @@ const mapStateToProps = (state) =>
 		browser           : state.me.browser,
 		advancedMode      : state.settings.advancedMode,
 		showNotifications : state.settings.showNotifications,
+		launchRoom        : state.launchRoom,
 		buttonControlBar  : state.settings.buttonControlBar,
 		drawerOverlayed   : state.settings.drawerOverlayed,
 		toolAreaOpen      : state.toolarea.toolAreaOpen,
@@ -369,6 +381,7 @@ export default connect(
 				prev.me.browser === next.me.browser &&
 				prev.settings.advancedMode === next.settings.advancedMode &&
 				prev.settings.showNotifications === next.settings.showNotifications &&
+				prev.launchRoom === next.launchRoom &&
 				prev.settings.buttonControlBar === next.settings.buttonControlBar &&
 				prev.settings.drawerOverlayed === next.settings.drawerOverlayed &&
 				prev.toolarea.toolAreaOpen === next.toolarea.toolAreaOpen&&

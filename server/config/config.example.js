@@ -264,7 +264,7 @@ module.exports = {
   },
   permissionsFromRoles: {
     // The role(s) have permission to lock/unlock a room
-    [CHANGE_ROOM_LOCK]: [userRoles.Host],
+    [CHANGE_ROOM_LOCK]: [userRoles.HOST],
     // The role(s) have permission to promote a peer from the lobby
     [PROMOTE_PEER]: [userRoles.NORMAL],
     // The role(s) have permission to give/remove other peers roles
@@ -272,7 +272,7 @@ module.exports = {
     // The role(s) have permission to send chat messages
     [SEND_CHAT]: [userRoles.NORMAL],
     // The role(s) have permission to moderate chat
-    [MODERATE_CHAT]: [userRoles.Host],
+    [MODERATE_CHAT]: [userRoles.HOST],
     // The role(s) have permission to share audio
     [SHARE_AUDIO]: [userRoles.NORMAL],
     // The role(s) have permission to share video
@@ -284,9 +284,9 @@ module.exports = {
     // The role(s) have permission to share files
     [SHARE_FILE]: [userRoles.NORMAL],
     // The role(s) have permission to moderate files
-    [MODERATE_FILES]: [userRoles.Host],
+    [MODERATE_FILES]: [userRoles.HOST],
     // The role(s) have permission to moderate room (e.g. kick user)
-    [MODERATE_ROOM]: [userRoles.Host],
+    [MODERATE_ROOM]: [userRoles.HOST],
     // The role(s) have permission to local record room
     [LOCAL_RECORD_ROOM]: [userRoles.NORMAL],
   },

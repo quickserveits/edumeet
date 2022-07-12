@@ -840,6 +840,10 @@ const mapDispatchToProps = (dispatch) =>
 		{
 			dispatch(settingsActions.setAudioMuted(flag));
 		},
+		setRoomName : (name) =>
+		{
+			dispatch(settingsActions.setRoomName(name));
+		},
 		setVideoMuted : (flag) =>
 		{
 			dispatch(settingsActions.setVideoMuted(flag));

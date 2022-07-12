@@ -1648,6 +1648,36 @@ class Room extends EventEmitter {
         break;
       }
 
+      case "launchPollAnswer": {
+        const {
+          roomId,
+          questions,
+          adminId,
+          launchOpen
+        } = request.data;
+
+        peer.launchPollAnswer = launchOpen;
+        console.log('launchPollAnswer::', request.data);
+        // Spread to others
+        this._notification(
+          peer.socket,
+          "launchPollAnswer",
+          {
+            peerId: peer.id,
+            roomId,
+            questions,
+            adminId,
+            launchOpen,
+          },
+          true
+        );
+
+        // Return no error
+        cb();
+
+        break;
+      }
+
       case "raisedHand": {
         const { raisedHand } = request.data;
 

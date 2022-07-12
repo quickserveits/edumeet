@@ -1663,6 +1663,35 @@ class Room extends EventEmitter {
         break;
       }
 
+      case "launchPollAnswer": {
+        const {
+          roomId,
+          questions,
+          adminId,
+          launchOpen
+        } = request.data;
+
+        peer.launchPollAnswer = launchOpen;
+
+        // Spread to others
+        this._notification(
+          peer.socket,
+          "launchPollAnswer",
+          {
+            roomId,
+            questions,
+            adminId,
+            launchOpen,
+          },
+          true
+        );
+
+        // Return no error
+        cb();
+
+        break;
+      }
+
       case "Host:mute": {
         if (!this._hasPermission(peer, MODERATE_ROOM))
           throw new Error("peer not authorized");

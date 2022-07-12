@@ -3,6 +3,7 @@ import { config } from '../../config';
 const initialState =
 {
 	name                          : '',
+	roomId                        : '',
 	// new/connecting/connected/disconnected/closed,
 	state                         : 'new',
 	locked                        : false,
@@ -47,13 +48,17 @@ const initialState =
 
 const room = (state = initialState, action) =>
 {
+
 	switch (action.type)
 	{
 		case 'SET_ROOM_NAME':
 		{
 			const { name } = action.payload;
 
-			return { ...state, name };
+			console.log('name:', name);
+			console.log('action:', action);
+
+			return { ...state, name: name, roomId: name };
 		}
 
 		case 'SET_MESSAGE_OPEN':

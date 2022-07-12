@@ -3,6 +3,7 @@ import { config } from '../../config';
 const initialState =
 {
 	displayName               : '',
+	roomName                  : '',
 	selectedWebcam            : null,
 	selectedAudioDevice       : null,
 	advancedMode              : false,
@@ -53,7 +54,15 @@ const settings = (state = initialState, action) =>
 		{
 			return { ...state, selectedWebcam: action.payload.deviceId };
 		}
+		case 'SET_ROOM_NAME':
+		{
+			const { name } = action.payload;
 
+				console.log('name:', name);
+				console.log('action:', action);
+
+			return { ...state, roomName: name };
+		}
 		case 'CHANGE_AUDIO_DEVICE':
 		{
 			return { ...state, selectedAudioDevice: action.payload.deviceId };
